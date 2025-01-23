@@ -1,0 +1,76 @@
+#私有源
+# source 'xxxxx'
+
+#cocoapods源 最后声明, 可以解决私有源pod 与 公共源pod 重名的问题
+source 'https://github.com/CocoaPods/Specs.git'
+
+# Uncomment the next line to define a global platform for your project
+platform :ios, '9.0'
+
+inhibit_all_warnings!
+
+use_frameworks! :linkage => :static # 使用 framework形势的静态库， 注释可变为.a 静态库
+use_modular_headers! #此字段用于pod自动生成 swift module 伞文件
+
+def st_installLocalPods(dir, arr)
+  arr.each do |onePod|
+  pod  onePod, :path => File.join(dir, onePod)
+  end
+end
+
+def pod_develop
+  dir = '../../'
+  arr = [
+  'STImageCompressTool'
+  ]
+   st_installLocalPods(dir, arr)
+end
+
+project 'STImageCompressTool_Example.xcodeproj'
+target 'STImageCompressTool_Example' do
+  # Pods for STImageCompressTool_Example
+  pod_develop
+  
+  # RxSwift
+  pod 'RxSwift', '~> 6.5.0'
+  pod 'RxCocoa', '~> 6.5.0'
+  
+  # UI
+  pod 'SnapKit'
+  
+  
+  # UI 调试
+  pod 'LookinServer', :subspecs => ['Swift'], :configurations => ['Debug', 'Release']
+end
+
+def pod_string_item_appen(item_str, append_str)
+  item_str = item_str.blank? ? "" : item_str
+  item_str << append_str
+  return item_str
+end
+
+# cocoapods  pod install hook
+post_install do |installer|
+  # 添加创建时候类前缀
+  installer.pods_project.root_object.attributes["CLASSPREFIX"] = "ST" # 添加 class prefix
+  # project编辑配置
+  installer.pods_project.build_configurations.each do |config|
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
+    config.build_settings['CLANG_WARN_DOCUMENTATION_COMMENTS'] = 'NO'
+    # xcode15 支持 c++旧版链接器
+    # items_append = "$(inherited) -ld64 -ld_classic"
+    # config.build_settings['OTHER_LDFLAGS'] = pod_string_item_appen(config.build_settings['OTHER_LDFLAGS'], items_append)
+  end
+
+  # 单个target编辑配置
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0' #修改pod的最低版本
+
+      # 以下是xcode14 忽略 bundle 类型pod签名
+      config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
+      config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
+      config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
+    end
+  end
+end
