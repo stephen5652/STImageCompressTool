@@ -9,11 +9,16 @@ PODS:
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
   - SnapKit (4.2.0)
-  - STImageCompressTool (0.0.1)
+  - STImageCompressTool (0.0.1):
+    - YYKit
+  - YYKit (1.0.9):
+    - YYKit/no-arc (= 1.0.9)
+  - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
   - LookinServer/Swift
   - RxCocoa (~> 6.5.0)
+  - RxRelay (~> 6.5.0)
   - RxSwift (~> 6.5.0)
   - SnapKit
   - STImageCompressTool (from `../../STImageCompressTool`)
@@ -25,6 +30,7 @@ SPEC REPOS:
     - RxRelay
     - RxSwift
     - SnapKit
+    - YYKit
 
 EXTERNAL SOURCES:
   STImageCompressTool:
@@ -36,8 +42,9 @@ SPEC CHECKSUMS:
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  STImageCompressTool: a7ebeb1c7acf6ba68af9714907956c2f6a517eb5
+  STImageCompressTool: b5ca950ecd0d1dc34b839e0d0c74e3955675357b
+  YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: fafa493b3a6ba095f8e3df3e73403eb39b8e4091
+PODFILE CHECKSUM: c39da4619935d1b6cc15882342ccce413d75fc0a
 
 COCOAPODS: 1.14.3
