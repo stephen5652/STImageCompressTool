@@ -5,7 +5,6 @@ public struct ImageItem: Equatable {
     public let identifier: String
     public var compressedImageURL: URL?
     public var isCompressed: Bool {
-        print("imageItem:\(asset.localIdentifier) imageUrl:\(String(describing: compressedImageURL))")
         return compressedImageURL != nil
     }
     
@@ -26,6 +25,22 @@ public struct ImageItem: Equatable {
     }
     
     public static func == (lhs: ImageItem, rhs: ImageItem) -> Bool {
-        return lhs.identifier == rhs.identifier
+        // 同时比较标识符和压缩URL的状态
+        if lhs.identifier != rhs.identifier {
+            return false
+        }
+        
+        // 如果两者都没有压缩URL，认为是相等的
+        if lhs.compressedImageURL == nil && rhs.compressedImageURL == nil {
+            return true
+        }
+        
+        // 如果其中一个有压缩URL而另一个没有，认为是不相等的
+        if (lhs.compressedImageURL == nil) != (rhs.compressedImageURL == nil) {
+            return false
+        }
+        
+        // 如果都有压缩URL，比较URL是否相等
+        return lhs.compressedImageURL == rhs.compressedImageURL
     }
 }

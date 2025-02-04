@@ -4,8 +4,6 @@ import RxCocoa
 import Photos
 import STImageCompressTool
 
-
-
 protocol ImageCompressViewModelType {
     func transform(_ input: ImageCompressViewModel.Input) -> ImageCompressViewModel.Output
 }
@@ -31,52 +29,37 @@ class ImageCompressViewModel: ImageCompressViewModelType {
         let imageItemsRelay = BehaviorRelay<[ImageItem]>(value: [])
         
         // 处理选择图片
-        input.reloadDataRelay
-            .map { (assets, shouldClear) -> [ImageItem] in
+        let reloadDataDriver = input.reloadDataRelay
+            .do(onNext: { (assets, shouldClear) in
                 let newItems = assets.map { ImageItem(asset: $0, compressedImageURL: nil) }
                 if shouldClear {
-                    return newItems
+                    imageItemsRelay.accept(newItems)
                 } else {
-                    return imageItemsRelay.value + newItems
+                    imageItemsRelay.accept(imageItemsRelay.value + newItems)
                 }
-            }
-            .bind(to: imageItemsRelay)
-            .disposed(by: disposeBag)
+            })
+            .map { _ in return () }
+            .asDriver(onErrorJustReturn: ())
         
-        let reloadDataDriver = input.reloadDataRelay
-                .map { _ in return () }  // 触发全局刷新
-                .asDriver(onErrorJustReturn: ())  // 转换为 Driver，并提供一个默认值
-        
-        // 处理图片压缩更新
-        input.updateImageRelay
-            .withLatestFrom(imageItemsRelay) { (updatedItems, currentItems) -> [ImageItem] in
-                var newItems = currentItems
-                for updatedItem in updatedItems {
-                    if let index = currentItems.firstIndex(where: { $0.identifier == updatedItem.identifier }) {
-                        newItems[index] = updatedItem
-                    }
-                }
-                return newItems
-            }
-            .bind(to: imageItemsRelay)
-            .disposed(by: disposeBag)
-        
-        // 更新数组
+        // 处理单个图片压缩更新
         let updateImageDriver = input.updateImageRelay
-            .map { itemsArr in
-                var result = [IndexPath]()
-                let oldItems = imageItemsRelay.value
-                var newItems = imageItemsRelay.value
-                for item in itemsArr {
-                    if let idx = oldItems.firstIndex(where: { $0 == item }) {
+            .withLatestFrom(imageItemsRelay) { (updatedItems, currentItems) -> ([IndexPath], [ImageItem]) in
+                var newItems = currentItems
+                var updatedIndexPaths: [IndexPath] = []
+                
+                for item in updatedItems {
+                    if let idx = currentItems.firstIndex(where: { $0.identifier == item.identifier }) {
                         newItems[idx] = item
-                        result.append(IndexPath(row: idx, section: 0))
+                        updatedIndexPaths.append(IndexPath(row: idx, section: 0))
                     }
                 }
-                imageItemsRelay.accept(newItems)
                 
-                return result
+                return (updatedIndexPaths, newItems)
             }
+            .do(onNext: { _, items in
+                imageItemsRelay.accept(items)
+            })
+            .map { indexPaths, _ in indexPaths }
             .asDriver(onErrorDriveWith: .empty())
         
         return Output(

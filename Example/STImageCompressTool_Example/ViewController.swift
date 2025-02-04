@@ -13,7 +13,7 @@ import RxCocoa
 import SnapKit
 import Photos
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDelegate {
     
     private lazy var tableView: UITableView = {
         let table = UITableView()
@@ -42,6 +42,8 @@ class ViewController: UIViewController {
     private let selectImageRelay = PublishRelay<Void>()
     private let selectedAssetsRelay = PublishRelay<([PHAsset],Bool)>()
     private let itemUpdatedRelay = PublishRelay<[ImageItem]>()
+    
+    private var dataSource: [ImageItem] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,15 +100,18 @@ class ViewController: UIViewController {
         // 获取输出
         let output = viewModel.transform(input)
         
-        // 修改列表数据绑定
-        output.imageItems.bind(to: tableView.rx.items(cellIdentifier: ImageCompressCell.identifier, cellType: ImageCompressCell.self)) { [weak self] (index, item, cell) in
-            // 创建 ViewModel 时传入回调
-            let cellViewModel = ImageCompressCellViewModel(item: item) { [weak self] updatedItem in
-                self?.itemUpdatedRelay.accept([updatedItem])
-            }
-            cell.configure(with: cellViewModel)
-        }
-        .disposed(by: disposeBag)
+        // 数据源更新
+        output.imageItems
+            .subscribe(onNext: { [weak self] items in
+                self?.dataSource = items
+            })
+            .disposed(by: disposeBag)
+        
+        // 设置 TableView 数据源
+        tableView.rx.setDelegate(self)
+            .disposed(by: disposeBag)
+        tableView.rx.setDataSource(self)
+            .disposed(by: disposeBag)
         
         // 处理选择图片
         output.showImagePicker
@@ -115,17 +120,20 @@ class ViewController: UIViewController {
             })
             .disposed(by: disposeBag)
         
-        output.reloadData.drive(onNext: { [weak self] in
-            self?.tableView.reloadData()
-        })
-        .disposed(by: disposeBag)
+        // 全局刷新 - 添加/清空图片时
+        output.reloadData
+            .drive(onNext: { [weak self] in
+                self?.tableView.reloadData()
+            })
+            .disposed(by: disposeBag)
         
-        output.reloadIndexPaths.drive(onNext: { [weak self] (indexPaths) in
-            if let weakSelf = self {
-                weakSelf.tableView.reloadRows(at: indexPaths, with: .none)
-            }
-        })
-        .disposed(by: disposeBag)
+        // 局部刷新 - 压缩完成时
+        output.reloadIndexPaths
+            .filter { !$0.isEmpty }
+            .drive(onNext: { [weak self] indexPaths in
+                self?.tableView.reloadRows(at: indexPaths, with: .none)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func showImagePicker() {
@@ -161,5 +169,25 @@ extension ViewController: PHPickerViewControllerDelegate {
             print("📸 Selected assets count: \(selectedAssets.count)")
             selectedAssetsRelay.accept((selectedAssets, false))
         }
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension ViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return dataSource.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImageCompressCell.identifier, for: indexPath) as! ImageCompressCell
+        print("load cell:\(indexPath.row)")
+        
+        let item = dataSource[indexPath.row]
+        let cellViewModel = ImageCompressCellViewModel(item: item) { [weak self] updatedItem in
+            self?.itemUpdatedRelay.accept([updatedItem])
+        }
+        cell.configure(with: cellViewModel)
+        
+        return cell
     }
 }
