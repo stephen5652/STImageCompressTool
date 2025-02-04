@@ -27,12 +27,16 @@ class ImageCompressCellViewModel {
     private let compressedImageURLRelay: BehaviorRelay<URL?>
     private let isCompressedRelay: BehaviorRelay<Bool>
     private let disposeBag = DisposeBag()
+    var onCompressComplete: ((ImageItem) -> Void)?
+    private let item: ImageItem
     
     // MARK: - Initialization
-    init(item: ImageItem) {
+    init(item: ImageItem, onCompressComplete: ((ImageItem) -> Void)? = nil) {
+        self.item = item
         self.asset = item.asset
         self.compressedImageURLRelay = BehaviorRelay(value: item.compressedImageURL)
         self.isCompressedRelay = BehaviorRelay(value: item.isCompressed)
+        self.onCompressComplete = onCompressComplete
     }
     
     // MARK: - Transform
@@ -100,16 +104,18 @@ class ImageCompressCellViewModel {
     
     // MARK: - Private Methods
     private func handleCompressButtonTap(image: UIImage) {
-        // 创建临时文件URL
         let tempURL = FileManager.default.temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
             .appendingPathExtension("jpg")
         
-        // 压缩图片
         if let compressedData = STImageCompressTool.compress(image, toMaxFileSize: 500) {
             try? compressedData.write(to: tempURL)
-            compressedImageURLRelay.accept(tempURL)
             isCompressedRelay.accept(true)
+            
+            // 直接更新现有的 item
+            var updatedItem = item
+            updatedItem.compressedImageURL = tempURL
+            onCompressComplete?(updatedItem)
         }
     }
     

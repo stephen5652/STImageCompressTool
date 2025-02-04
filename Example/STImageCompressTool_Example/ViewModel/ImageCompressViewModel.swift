@@ -14,13 +14,15 @@ class ImageCompressViewModel: ImageCompressViewModelType {
     
     struct Input {
         let selectImageRelay: PublishRelay<Void>
-        let compressImageRelay: PublishRelay<Int>
-        let selectedAssetsRelay: PublishRelay<[PHAsset]>
+        let updateImageRelay: PublishRelay<[ImageItem]>
+        let reloadDataRelay: PublishRelay<([PHAsset], Bool)>
     }
     
     struct Output {
-        let imageItems: Driver<[ImageItem]>
+        let imageItems: Observable<[ImageItem]>
         let showImagePicker: Driver<Void>
+        let reloadData: Driver<Void>
+        let reloadIndexPaths: Driver<[IndexPath]>
     }
     
     private let disposeBag = DisposeBag()
@@ -29,58 +31,59 @@ class ImageCompressViewModel: ImageCompressViewModelType {
         let imageItemsRelay = BehaviorRelay<[ImageItem]>(value: [])
         
         // 处理选择图片
-        input.selectedAssetsRelay
-            .map { assets in
-                assets.map { ImageItem(asset: $0, compressedImageURL: nil) }
-            }
-            .map { newItems in
-                imageItemsRelay.value + newItems
-            }
-            .bind(to: imageItemsRelay)
-            .disposed(by: disposeBag)
-        
-        // 处理压缩图片
-        input.compressImageRelay
-            .withLatestFrom(imageItemsRelay) { index, items in (index, items) }
-            .filter { index, items in index < items.count }
-            .flatMap { index, items -> Observable<[ImageItem]> in
-                let item = items[index]
-                
-                return Observable.create { observer in
-                    let options = PHImageRequestOptions()
-                    options.deliveryMode = .highQualityFormat
-                    options.isNetworkAccessAllowed = true
-                    
-                    PHImageManager.default().requestImageDataAndOrientation(
-                        for: item.asset,
-                        options: options
-                    ) { imageData, _, _, _ in
-                        var newItems = items
-                        
-                        if let imageData = imageData,
-                           let compressedData = STImageCompressTool.compress(UIImage(data: imageData)!, toMaxFileSize: 500) {
-                            // 创建临时文件URL
-                            let tempURL = FileManager.default.temporaryDirectory
-                                .appendingPathComponent(UUID().uuidString)
-                                .appendingPathExtension("jpg")
-                            
-                            try? compressedData.write(to: tempURL)
-                            newItems[index] = ImageItem(asset: item.asset, compressedImageURL: tempURL)
-                        }
-                        
-                        observer.onNext(newItems)
-                        observer.onCompleted()
-                    }
-                    
-                    return Disposables.create()
+        input.reloadDataRelay
+            .map { (assets, shouldClear) -> [ImageItem] in
+                let newItems = assets.map { ImageItem(asset: $0, compressedImageURL: nil) }
+                if shouldClear {
+                    return newItems
+                } else {
+                    return imageItemsRelay.value + newItems
                 }
             }
             .bind(to: imageItemsRelay)
             .disposed(by: disposeBag)
         
+        let reloadDataDriver = input.reloadDataRelay
+                .map { _ in return () }  // 触发全局刷新
+                .asDriver(onErrorJustReturn: ())  // 转换为 Driver，并提供一个默认值
+        
+        // 处理图片压缩更新
+        input.updateImageRelay
+            .withLatestFrom(imageItemsRelay) { (updatedItems, currentItems) -> [ImageItem] in
+                var newItems = currentItems
+                for updatedItem in updatedItems {
+                    if let index = currentItems.firstIndex(where: { $0.identifier == updatedItem.identifier }) {
+                        newItems[index] = updatedItem
+                    }
+                }
+                return newItems
+            }
+            .bind(to: imageItemsRelay)
+            .disposed(by: disposeBag)
+        
+        // 更新数组
+        let updateImageDriver = input.updateImageRelay
+            .map { itemsArr in
+                var result = [IndexPath]()
+                let oldItems = imageItemsRelay.value
+                var newItems = imageItemsRelay.value
+                for item in itemsArr {
+                    if let idx = oldItems.firstIndex(where: { $0 == item }) {
+                        newItems[idx] = item
+                        result.append(IndexPath(row: idx, section: 0))
+                    }
+                }
+                imageItemsRelay.accept(newItems)
+                
+                return result
+            }
+            .asDriver(onErrorDriveWith: .empty())
+        
         return Output(
-            imageItems: imageItemsRelay.asDriver(),
-            showImagePicker: input.selectImageRelay.asDriver(onErrorJustReturn: ())
+            imageItems: imageItemsRelay.asObservable(),
+            showImagePicker: input.selectImageRelay.asDriver(onErrorJustReturn: ()),
+            reloadData: reloadDataDriver,
+            reloadIndexPaths: updateImageDriver
         )
     }
 } 

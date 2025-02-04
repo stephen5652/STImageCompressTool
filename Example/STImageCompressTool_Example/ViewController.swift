@@ -29,13 +29,19 @@ class ViewController: UIViewController {
         return button
     }()
     
+    private lazy var clearButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setTitle("清空", for: .normal)
+        return button
+    }()
+
     private let viewModel: ImageCompressViewModelType = ImageCompressViewModel()
     private let disposeBag = DisposeBag()
     
     // 移除不需要的 Relay
     private let selectImageRelay = PublishRelay<Void>()
-    private let compressImageRelay = PublishRelay<Int>()
-    private let selectedAssetsRelay = PublishRelay<[PHAsset]>()
+    private let selectedAssetsRelay = PublishRelay<([PHAsset],Bool)>()
+    private let itemUpdatedRelay = PublishRelay<[ImageItem]>()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,18 +54,25 @@ class ViewController: UIViewController {
         title = "图片压缩工具"
         
         view.addSubview(tableView)
-        view.addSubview(addButton)
         
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview()
-            make.bottom.equalTo(addButton.snp.top)
         }
         
-        addButton.snp.makeConstraints { make in
+        let hStack = UIStackView(arrangedSubviews: [clearButton, addButton])
+        hStack.axis = .horizontal
+        view.addSubview(hStack)
+        
+        hStack.snp.makeConstraints { make in
+            make.top.equalTo(tableView.snp.bottom)
             make.left.right.equalToSuperview()
             make.bottom.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(44)
+        }
+        
+        clearButton.snp.makeConstraints { make in
+            make.width.equalTo(addButton)
         }
     }
     
@@ -69,24 +82,31 @@ class ViewController: UIViewController {
             .bind(to: selectImageRelay)
             .disposed(by: disposeBag)
         
+        clearButton.rx.tap
+            .bind(onNext: { [weak self] in
+                self?.selectedAssetsRelay.accept(([], true))
+            })
+            .disposed(by: disposeBag)
+        
         // 构建输入
         let input = ImageCompressViewModel.Input(
             selectImageRelay: selectImageRelay,
-            compressImageRelay: compressImageRelay,
-            selectedAssetsRelay: selectedAssetsRelay
+            updateImageRelay: itemUpdatedRelay,
+            reloadDataRelay: selectedAssetsRelay
         )
         
         // 获取输出
         let output = viewModel.transform(input)
         
-        // 绑定列表数据
-        output.imageItems
-            .drive(tableView.rx.items(cellIdentifier: ImageCompressCell.identifier, cellType: ImageCompressCell.self)) { index, item, cell in
-                // 创建 ViewModel
-                let cellViewModel = ImageCompressCellViewModel(item: item)
-                cell.configure(with: cellViewModel)
+        // 修改列表数据绑定
+        output.imageItems.bind(to: tableView.rx.items(cellIdentifier: ImageCompressCell.identifier, cellType: ImageCompressCell.self)) { [weak self] (index, item, cell) in
+            // 创建 ViewModel 时传入回调
+            let cellViewModel = ImageCompressCellViewModel(item: item) { [weak self] updatedItem in
+                self?.itemUpdatedRelay.accept([updatedItem])
             }
-            .disposed(by: disposeBag)
+            cell.configure(with: cellViewModel)
+        }
+        .disposed(by: disposeBag)
         
         // 处理选择图片
         output.showImagePicker
@@ -94,6 +114,18 @@ class ViewController: UIViewController {
                 self?.showImagePicker()
             })
             .disposed(by: disposeBag)
+        
+        output.reloadData.drive(onNext: { [weak self] in
+            self?.tableView.reloadData()
+        })
+        .disposed(by: disposeBag)
+        
+        output.reloadIndexPaths.drive(onNext: { [weak self] (indexPaths) in
+            if let weakSelf = self {
+                weakSelf.tableView.reloadRows(at: indexPaths, with: .none)
+            }
+        })
+        .disposed(by: disposeBag)
     }
     
     private func showImagePicker() {
@@ -127,7 +159,7 @@ extension ViewController: PHPickerViewControllerDelegate {
         
         if !selectedAssets.isEmpty {
             print("📸 Selected assets count: \(selectedAssets.count)")
-            selectedAssetsRelay.accept(selectedAssets)
+            selectedAssetsRelay.accept((selectedAssets, false))
         }
     }
 }

@@ -45,7 +45,6 @@ class ImageCompressCell: UITableViewCell {
     // MARK: - Properties
     private var viewModel: ImageCompressCellViewModel?
     private let disposeBag = DisposeBag()
-    private var cellDisposeBag = DisposeBag()
     
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -55,7 +54,6 @@ class ImageCompressCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        cellDisposeBag = DisposeBag()
         originalImageView.image = nil
         compressedImageView.image = nil
         infoLabel.text = nil
@@ -100,16 +98,6 @@ class ImageCompressCell: UITableViewCell {
         }
     }
     
-    override func willMove(toWindow window: UIWindow?) {
-        super.willMove(toWindow: window)
-        
-        if window == nil {
-            cellDisposeBag = DisposeBag()
-            originalImageView.image = nil
-            compressedImageView.image = nil
-        }
-    }
-    
     // MARK: - Configuration
     func configure(with viewModel: ImageCompressCellViewModel) {
         self.viewModel = viewModel
@@ -120,21 +108,22 @@ class ImageCompressCell: UITableViewCell {
         
         let output = viewModel.transform(input)
         
+        // 绑定输出
         output.originalImage
             .drive(originalImageView.rx.image)
-            .disposed(by: cellDisposeBag)
+            .disposed(by: disposeBag)
         
         output.compressedImage
             .drive(compressedImageView.rx.image)
-            .disposed(by: cellDisposeBag)
+            .disposed(by: disposeBag)
         
         output.infoText
             .drive(infoLabel.rx.text)
-            .disposed(by: cellDisposeBag)
+            .disposed(by: disposeBag)
         
         output.isCompressButtonHidden
             .drive(compressButton.rx.isHidden)
-            .disposed(by: cellDisposeBag)
+            .disposed(by: disposeBag)
     }
     
 }
