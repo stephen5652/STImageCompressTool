@@ -222,7 +222,7 @@ extension UIImage {
     ///   - rawData: 原始图片数据
     ///   - limitLongWidth: 长边限制
     /// - Returns: 处理后数据
-    public static func compressImageData(_ rawData:Data, limitLongWidth:CGFloat) -> Data?{
+    public static func compressImageData(_ rawData:Data, limitLongWidth:CGFloat = 800) -> Data?{
         guard max(rawData.imageSize.height, rawData.imageSize.width) > limitLongWidth else {
             return rawData
         }

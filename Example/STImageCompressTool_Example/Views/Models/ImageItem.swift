@@ -1,28 +1,33 @@
 import Photos
 
 public struct ImageItem: Equatable {
+    public enum ImageType: String {
+        case gif = "gif"
+        case jpg = "jpg"
+    }
+    
     public let asset: PHAsset
     public let identifier: String
+    public let imageFileSize: Int
+    public let imageType: ImageType
+
     public var compressedTime: TimeInterval?
-    public var compressedImageURL: URL?
-    public var isCompressed: Bool {
-        return compressedImageURL != nil
-    }
     
-    public init(asset: PHAsset, compressedImageURL: URL? = nil) {
-        self.identifier = UUID().uuidString
+    public init(asset: PHAsset, imageFileSize: Int = 0) {
         self.asset = asset
-        self.compressedImageURL = compressedImageURL
+        self.imageType = (PHAssetResource.assetResources(for: asset).first?.uniformTypeIdentifier ?? "") .lowercased().contains("gif") ? .gif : .jpg
+        self.identifier = UUID().uuidString
+        self.imageFileSize = imageFileSize
     }
     
-    /// 图片的文件大小--Byte
-    /// @discussion: 此方法对于云中的相册文件获取不到大小
-    public var imageFileSize: Int {
-        get {
-            let resource = PHAssetResource.assetResources(for: asset).first
-            let result = resource?.value(forKey: "fileSize") as? Int ?? 0
-            return result
-        }
+    public var orignalImageUrl: URL {
+        let resultUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(identifier)_original.\(imageType.rawValue)")
+        return resultUrl
+    }
+    
+    public var compressedImageURL: URL {
+        let result = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(identifier)_compressed.\(imageType.rawValue)")
+        return result
     }
     
     public static func == (lhs: ImageItem, rhs: ImageItem) -> Bool {
@@ -32,16 +37,16 @@ public struct ImageItem: Equatable {
         }
         
         // 如果两者都没有压缩URL，认为是相等的
-        if lhs.compressedImageURL == nil && rhs.compressedImageURL == nil {
+        if lhs.compressedTime == nil && rhs.compressedTime == nil {
             return true
         }
         
         // 如果其中一个有压缩URL而另一个没有，认为是不相等的
-        if (lhs.compressedImageURL == nil) != (rhs.compressedImageURL == nil) {
+        if (lhs.compressedTime == nil) != (rhs.compressedTime == nil) {
             return false
         }
         
         // 如果都有压缩URL，比较URL是否相等
-        return lhs.compressedImageURL == rhs.compressedImageURL
+        return lhs.compressedTime == rhs.compressedTime
     }
 }

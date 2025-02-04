@@ -30,16 +30,8 @@ class ImageCompressCell: UITableViewCell {
         let label = UILabel()
         label.numberOfLines = 0
         label.font = .systemFont(ofSize: 12)
+        label.textAlignment = .left
         return label
-    }()
-    
-    private lazy var compressButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setTitle("压缩", for: .normal)
-        button.backgroundColor = .systemBlue
-        button.setTitleColor(.white, for: .normal)
-        button.layer.cornerRadius = 4
-        return button
     }()
     
     // MARK: - Properties
@@ -67,36 +59,31 @@ class ImageCompressCell: UITableViewCell {
     
     // MARK: - UI Setup
     private func setupUI() {
+        selectionStyle = .none
         contentView.addSubview(originalImageView)
         contentView.addSubview(compressedImageView)
         contentView.addSubview(infoLabel)
-        contentView.addSubview(compressButton)
+        
+        // 设置固定的 cell 高度
+        contentView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         
         originalImageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(16)
-            make.top.equalToSuperview().offset(12)
+            make.top.equalToSuperview().offset(10)
             make.width.height.equalTo(120)
         }
         
         compressedImageView.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-16)
-            make.top.equalToSuperview().offset(12)
+            make.top.equalToSuperview().offset(10)
             make.width.height.equalTo(120)
         }
         
         infoLabel.snp.makeConstraints { make in
             make.left.equalTo(originalImageView)
             make.right.equalTo(compressedImageView)
-            make.top.equalTo(originalImageView.snp.bottom).offset(8)
-            make.height.equalTo(100)
-        }
-        
-        compressButton.snp.makeConstraints { make in
-            make.centerX.equalToSuperview()
-            make.top.equalTo(infoLabel.snp.bottom).offset(8)
-            make.width.equalTo(80)
-            make.height.equalTo(32)
-            make.bottom.equalToSuperview().offset(-12)
+            make.top.equalTo(originalImageView.snp.bottom).offset(10)
+            make.bottom.equalToSuperview().offset(-10)
         }
     }
     
@@ -104,9 +91,7 @@ class ImageCompressCell: UITableViewCell {
     func configure(with viewModel: ImageCompressCellViewModel) {
         self.viewModel = viewModel
         
-        let input = ImageCompressCellViewModel.Input(
-            compressButtonTap: compressButton.rx.tap.asSignal()
-        )
+        let input = ImageCompressCellViewModel.Input()
         
         let output = viewModel.transform(input)
         
@@ -122,11 +107,6 @@ class ImageCompressCell: UITableViewCell {
         output.infoText
             .drive(infoLabel.rx.text)
             .disposed(by: disposeBag)
-        
-        output.isCompressButtonHidden
-            .drive(compressButton.rx.isHidden)
-            .disposed(by: disposeBag)
-        
     }
     
 }

@@ -41,7 +41,6 @@ class ViewController: UIViewController, UITableViewDelegate {
     // 移除不需要的 Relay
     private let selectImageRelay = PublishRelay<Void>()
     private let selectedAssetsRelay = PublishRelay<([PHAsset],Bool)>()
-    private let itemUpdatedRelay = PublishRelay<[ImageItem]>()
     
     private var dataSource: [ImageItem] = []
     
@@ -93,7 +92,6 @@ class ViewController: UIViewController, UITableViewDelegate {
         // 构建输入
         let input = ImageCompressViewModel.Input(
             selectImageRelay: selectImageRelay,
-            updateImageRelay: itemUpdatedRelay,
             reloadDataRelay: selectedAssetsRelay
         )
         
@@ -183,9 +181,7 @@ extension ViewController: UITableViewDataSource {
         print("load cell:\(indexPath.row)")
         
         let item = dataSource[indexPath.row]
-        let cellViewModel = ImageCompressCellViewModel(item: item) { [weak self] updatedItem in
-            self?.itemUpdatedRelay.accept([updatedItem])
-        }
+        let cellViewModel = ImageCompressCellViewModel(item: item)
         cell.configure(with: cellViewModel)
         
         return cell
