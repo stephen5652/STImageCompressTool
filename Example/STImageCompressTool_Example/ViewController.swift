@@ -100,9 +100,9 @@ class ViewController: UIViewController, UITableViewDelegate {
         // 获取输出
         let output = viewModel.transform(input)
         
-        // 数据源更新
+        // 数据源更新 - 确保在主线程
         output.imageItems
-            .subscribe(onNext: { [weak self] items in
+            .drive(onNext: { [weak self] items in
                 self?.dataSource = items
             })
             .disposed(by: disposeBag)

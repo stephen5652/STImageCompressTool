@@ -17,7 +17,7 @@ class ImageCompressViewModel: ImageCompressViewModelType {
     }
     
     struct Output {
-        let imageItems: Observable<[ImageItem]>
+        let imageItems: Driver<[ImageItem]>
         let showImagePicker: Driver<Void>
         let reloadData: Driver<Void>
         let reloadIndexPaths: Driver<[IndexPath]>
@@ -63,7 +63,7 @@ class ImageCompressViewModel: ImageCompressViewModelType {
             .asDriver(onErrorDriveWith: .empty())
         
         return Output(
-            imageItems: imageItemsRelay.asObservable(),
+            imageItems: imageItemsRelay.asDriver(),
             showImagePicker: input.selectImageRelay.asDriver(onErrorJustReturn: ()),
             reloadData: reloadDataDriver,
             reloadIndexPaths: updateImageDriver

@@ -3,6 +3,7 @@ import Photos
 public struct ImageItem: Equatable {
     public let asset: PHAsset
     public let identifier: String
+    public var compressedTime: TimeInterval?
     public var compressedImageURL: URL?
     public var isCompressed: Bool {
         return compressedImageURL != nil

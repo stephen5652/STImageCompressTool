@@ -44,7 +44,7 @@ class ImageCompressCell: UITableViewCell {
     
     // MARK: - Properties
     private var viewModel: ImageCompressCellViewModel?
-    private let disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
     
     // MARK: - Initialization
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -58,6 +58,7 @@ class ImageCompressCell: UITableViewCell {
         compressedImageView.image = nil
         infoLabel.text = nil
         viewModel = nil
+        disposeBag = DisposeBag()
     }
 
     required init?(coder: NSCoder) {
@@ -87,6 +88,7 @@ class ImageCompressCell: UITableViewCell {
             make.left.equalTo(originalImageView)
             make.right.equalTo(compressedImageView)
             make.top.equalTo(originalImageView.snp.bottom).offset(8)
+            make.height.equalTo(100)
         }
         
         compressButton.snp.makeConstraints { make in
@@ -124,6 +126,7 @@ class ImageCompressCell: UITableViewCell {
         output.isCompressButtonHidden
             .drive(compressButton.rx.isHidden)
             .disposed(by: disposeBag)
+        
     }
     
 }
