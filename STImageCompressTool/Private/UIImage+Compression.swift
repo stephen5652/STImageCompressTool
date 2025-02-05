@@ -167,6 +167,14 @@ extension UIImage {
             return nil
         }
         
+        return compressImageData(imageData, toMaxFileSize: maxFileSize)
+    }
+    
+    
+    public static func compressImageData(_ data: Data, toMaxFileSize maxFileSize: Int) -> Data? {
+        var compression: CGFloat = 1.0
+        
+        var imageData = data
         if imageData.count <= maxFileSize {
             return imageData
         }
@@ -193,6 +201,10 @@ extension UIImage {
         
         // 如果通过调整 JPEG 压缩质量仍然不能满足大小要求，则递归减小分辨率
         if imageData.count > maxFileSize {
+            guard let image: UIImage = UIImage(data: imageData) else {
+                return nil
+            }
+            
             let ratio = CGFloat(maxFileSize) / CGFloat(imageData.count)
             let newSize = CGSize(width: image.size.width * sqrt(ratio), height: image.size.height * sqrt(ratio))
             let renderer = UIGraphicsImageRenderer(size: newSize)

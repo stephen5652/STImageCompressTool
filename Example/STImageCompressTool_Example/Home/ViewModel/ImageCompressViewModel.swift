@@ -140,7 +140,11 @@ class ImageCompressViewModel: ImageCompressViewModelType {
                 
                 var compressedData: Data?
                 print("compress image:\(item.imageType.rawValue)")
-                compressedData = UIImage.compressImageData(orignalData)
+                if item.imageType == .gif {
+                    compressedData = UIImage.compressGIFData(with: orignalData, limitDataSize: 1024 * 1024 * 5)
+                } else {
+                    compressedData = UIImage.compressImageData(orignalData, toMaxFileSize: 1024 * 1024 * 5)
+                }
                 
                 try compressedData?.write(to: compressedImageURL)
                 var updateItem = item

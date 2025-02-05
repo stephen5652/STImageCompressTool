@@ -73,9 +73,15 @@ class ImageCompressCellViewModel {
             .flatMap { [weak self] original, compressed -> Observable<String> in
                 guard let self = self else { return .just("") }
                 
-                return Observable.create { observer in
-                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                        guard let self else { return }
+                return Observable.create { [weak self] observer in
+                    guard let self else {
+                        return Disposables.create()
+                    }
+                    
+                    DispatchQueue.global().async { [weak self] in
+                        guard let self else {
+                            return
+                        }
                         var info = self.generateAssetInfo(prefix: "原图")
                         if let compressedImage = compressed {
                             info += "\n" + self.generateImageInfo(imageUrl: compressedImage, prefix: "压缩后")
@@ -138,8 +144,9 @@ class ImageCompressCellViewModel {
     }
     
     private func generateAssetInfo(prefix: String) -> String {
-        var info = "\(prefix)尺寸: \(item.asset.pixelWidth)x\(item.asset.pixelHeight)"
-        info += "\t\(prefix)大小: \(String(format: "%.2f", Double(item.imageFileSize) / 1024.0))KB"
+        var info = "\(prefix)S: \(item.asset.pixelWidth)x\(item.asset.pixelHeight)"
+        info += "\tF: \(String(format: "%.2f", Double(item.sizeOri.file) / 1024.0))KB"
+        info += "\tM: \(String(format: "%.2f", Double(item.sizeOri.mem) / 1024.0))KB"
         
         return info
     }
@@ -149,11 +156,9 @@ class ImageCompressCellViewModel {
             return ""
         }
         
-        var info = "\(prefix)尺寸: \(Int(image.size.width))x\(Int(image.size.height))"
-        // 在当前队列计算图片大小（因为已经在后台队列了）
-        if let imageData = image.jpegData(compressionQuality: 1.0) {
-            info += "\t\(prefix)大小: \(String(format: "%.2f", Double(imageData.count) / 1024.0))KB"
-        }
+        var info = "\(prefix)S: \(Int(image.size.width))x\(Int(image.size.height))"
+        info += "\tF: \(String(format: "%.2f", Double(item.sizeCompressed.file) / 1024.0))KB"
+        info += "\tM: \(String(format: "%.2f", Double(item.sizeCompressed.mem) / 1024.0))KB"
         
         return info
     }

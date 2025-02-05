@@ -13,6 +13,32 @@ public struct ImageItem: Equatable {
 
     public var compressedTime: TimeInterval?
     
+    public var orignalImageSize: CGSize {
+        return CGSize(width: asset.pixelWidth, height: asset.pixelHeight)
+    }
+    
+    public var sizeOri: (mem: Int, file: Int) {
+        return autoreleasepool {
+            guard let data = try? Data(contentsOf: orignalImageUrl),
+                  let image = UIImage(contentsOfFile: orignalImageUrl.path)
+            else {
+                return (0, 0)
+            }
+            return (image.jpegData(compressionQuality: 1)?.count ?? 0, data.count)
+        }
+    }
+    
+    public var sizeCompressed: (mem: Int, file: Int) {
+        return autoreleasepool {
+            guard let data = try? Data(contentsOf: compressedImageURL),
+                  let image = UIImage(contentsOfFile: compressedImageURL.path)
+            else {
+                return (0, 0)
+            }
+            return (image.jpegData(compressionQuality: 1)?.count ?? 0, data.count)
+        }
+    }
+
     public init(asset: PHAsset, imageFileSize: Int = 0) {
         self.asset = asset
         self.imageType = (PHAssetResource.assetResources(for: asset).first?.uniformTypeIdentifier ?? "") .lowercased().contains("gif") ? .gif : .jpg
