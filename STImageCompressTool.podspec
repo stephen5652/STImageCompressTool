@@ -48,6 +48,7 @@ Pod::Spec.new do |spec|
 
   # 其他依赖pod
    spec.dependency "YYKit"
+   spec.dependency "Kingfisher"
 
 #   spec.subspec 'WithLoad' do |ss|
 #       ss.source_files = 'YKHawkeye/Src/MethodUseTime/**/*{.h,.m}'

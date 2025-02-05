@@ -1,4 +1,5 @@
 PODS:
+  - Kingfisher (8.1.0)
   - LookinServer/Core (1.2.8)
   - LookinServer/Swift (1.2.8):
     - LookinServer/Core
@@ -10,12 +11,14 @@ PODS:
   - RxSwift (6.5.0)
   - SnapKit (4.2.0)
   - STImageCompressTool (0.0.1):
+    - Kingfisher
     - YYKit
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
   - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
+  - Kingfisher (= 8.1.0)
   - LookinServer/Swift
   - RxCocoa (~> 6.5.0)
   - RxRelay (~> 6.5.0)
@@ -25,6 +28,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
+    - Kingfisher
     - LookinServer
     - RxCocoa
     - RxRelay
@@ -37,14 +41,15 @@ EXTERNAL SOURCES:
     :path: "../../STImageCompressTool"
 
 SPEC CHECKSUMS:
+  Kingfisher: dfbf20b6249ed4ef6f18d6a96c847bce860bdb95
   LookinServer: 1b2b61c6402ae29fa22182d48f5cd067b4e99e80
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  STImageCompressTool: b5ca950ecd0d1dc34b839e0d0c74e3955675357b
+  STImageCompressTool: 01e70330cb97aaff1bbeb17bc2a9ec12419a2da7
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: f0418cb0903719c69078a157c1d091baed8e278c
+PODFILE CHECKSUM: 6edce0ca79d9291cb53eede5ce7adcb8faf4ea26
 
 COCOAPODS: 1.14.3

@@ -10,6 +10,7 @@
 		59CF9B4E5DFEB438EAD93013 /* Pods_STImageCompressTool_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */; };
 		CE60E73A2D427AAA002AB386 /* ImageCompressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE60E7382D427AAA002AB386 /* ImageCompressViewModel.swift */; };
 		CE60F01F2D427F41002AB386 /* ImageCompressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE60F01D2D427F41002AB386 /* ImageCompressCell.swift */; };
+		CEB0577E2D53080C007CAAC6 /* STEmptyOc.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB0577D2D53080C007CAAC6 /* STEmptyOc.m */; };
 		CEB0F13C2D43B3A1007CAAC6 /* ImageCompressCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB0F13B2D43B3A1007CAAC6 /* ImageCompressCellViewModel.swift */; };
 		CEB0F13F2D43B433007CAAC6 /* ImageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB0F13D2D43B433007CAAC6 /* ImageItem.swift */; };
 		FDDD8566299DED6500EAB62E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDD8565299DED6500EAB62E /* AppDelegate.swift */; };
@@ -26,6 +27,9 @@
 		86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_STImageCompressTool_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE60E7382D427AAA002AB386 /* ImageCompressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressViewModel.swift; sourceTree = "<group>"; };
 		CE60F01D2D427F41002AB386 /* ImageCompressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressCell.swift; sourceTree = "<group>"; };
+		CEB0577B2D53080B007CAAC6 /* STImageCompressTool_Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STImageCompressTool_Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		CEB0577C2D53080C007CAAC6 /* STEmptyOc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STEmptyOc.h; sourceTree = "<group>"; };
+		CEB0577D2D53080C007CAAC6 /* STEmptyOc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STEmptyOc.m; sourceTree = "<group>"; };
 		CEB0F13B2D43B3A1007CAAC6 /* ImageCompressCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressCellViewModel.swift; sourceTree = "<group>"; };
 		CEB0F13D2D43B433007CAAC6 /* ImageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageItem.swift; sourceTree = "<group>"; };
 		FDDD8562299DED6500EAB62E /* STImageCompressTool_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = STImageCompressTool_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -117,12 +121,15 @@
 				FDDD8565299DED6500EAB62E /* AppDelegate.swift */,
 				FDDD8567299DED6500EAB62E /* SceneDelegate.swift */,
 				FDDD8569299DED6500EAB62E /* ViewController.swift */,
+				CEB0577C2D53080C007CAAC6 /* STEmptyOc.h */,
+				CEB0577D2D53080C007CAAC6 /* STEmptyOc.m */,
 				CE60F01E2D427F41002AB386 /* Views */,
 				CE60E7392D427AAA002AB386 /* ViewModel */,
 				FDDD856B299DED6500EAB62E /* Main.storyboard */,
 				FDDD856E299DED6600EAB62E /* Assets.xcassets */,
 				FDDD8570299DED6600EAB62E /* LaunchScreen.storyboard */,
 				FDDD8573299DED6600EAB62E /* Info.plist */,
+				CEB0577B2D53080B007CAAC6 /* STImageCompressTool_Example-Bridging-Header.h */,
 			);
 			path = STImageCompressTool_Example;
 			sourceTree = "<group>";
@@ -138,6 +145,7 @@
 				FDDD855E299DED6500EAB62E /* Sources */,
 				FDDD855F299DED6500EAB62E /* Frameworks */,
 				FDDD8560299DED6500EAB62E /* Resources */,
+				E5514B3EA63EB85207CF88F6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -161,6 +169,7 @@
 				TargetAttributes = {
 					FDDD8561299DED6500EAB62E = {
 						CreatedOnToolsVersion = 14.1;
+						LastSwiftMigration = 1620;
 					};
 				};
 			};
@@ -218,6 +227,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		E5514B3EA63EB85207CF88F6 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -231,6 +257,7 @@
 				CE60E73A2D427AAA002AB386 /* ImageCompressViewModel.swift in Sources */,
 				FDDD8568299DED6500EAB62E /* SceneDelegate.swift in Sources */,
 				CEB0F13F2D43B433007CAAC6 /* ImageItem.swift in Sources */,
+				CEB0577E2D53080C007CAAC6 /* STEmptyOc.m in Sources */,
 				CE60F01F2D427F41002AB386 /* ImageCompressCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -307,7 +334,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -361,7 +388,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -377,6 +404,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GCTMPJ4V33;
@@ -387,6 +415,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -395,6 +424,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "yk.STImageCompressTool-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "STImageCompressTool_Example/STImageCompressTool_Example-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -406,6 +437,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GCTMPJ4V33;
@@ -416,6 +448,7 @@
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -424,6 +457,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "yk.STImageCompressTool-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "STImageCompressTool_Example/STImageCompressTool_Example-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -3,13 +3,15 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import RxRelay
+import Kingfisher
+import STImageCompressTool
 
 class ImageCompressCell: UITableViewCell {
     static let identifier = "ImageCompressCell"
     
     // MARK: - UI Components
-    private lazy var originalImageView: UIImageView = {
-        let imageView = UIImageView()
+    private lazy var originalImageView: AnimatedImageView = {
+        let imageView = AnimatedImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
@@ -17,8 +19,8 @@ class ImageCompressCell: UITableViewCell {
         return imageView
     }()
     
-    private lazy var compressedImageView: UIImageView = {
-        let imageView = UIImageView()
+    private lazy var compressedImageView: AnimatedImageView = {
+        let imageView = AnimatedImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
@@ -97,13 +99,19 @@ class ImageCompressCell: UITableViewCell {
         
         // 绑定输出
         output.originalImage
-            .drive(originalImageView.rx.image)
+            .drive(onNext: { [weak self] (url) in
+                guard let self = self, let url else { return }
+                originalImageView.kfSetImage(localPath: url.path)
+            })
             .disposed(by: disposeBag)
         
         output.compressedImage
-            .drive(compressedImageView.rx.image)
+            .drive(onNext: { [weak self] (url) in
+                guard let self = self, let url else { return }
+                compressedImageView.kfSetImage(localPath: url.path)
+            })
             .disposed(by: disposeBag)
-        
+
         output.infoText
             .drive(infoLabel.rx.text)
             .disposed(by: disposeBag)

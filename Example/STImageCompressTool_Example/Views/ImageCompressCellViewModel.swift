@@ -10,8 +10,8 @@ class ImageCompressCellViewModel {
     struct Input {}
     
     struct Output {
-        let originalImage: Driver<UIImage?>
-        let compressedImage: Driver<UIImage?>
+        let originalImage: Driver<URL?>
+        let compressedImage: Driver<URL?>
         let infoText: Driver<String>
     }
     
@@ -29,15 +29,14 @@ class ImageCompressCellViewModel {
     // MARK: - Transform
     func transform(_ input: Input) -> Output {
         // 加载原始图片
-        let originalImage = Observable<UIImage?>.create { [weak self] observer in
-            guard let self = self,
-                  let data = try? Data(contentsOf: item.orignalImageUrl)
-            else { return Disposables.create() }
+        let originalImage = Observable<URL?>.create { [weak self] observer in
+            guard let self = self else { return Disposables.create() }
             
-            let image = UIImage(data: data)
-            
-            observer.onNext(image)
-            observer.onCompleted()
+            let url = item.orignalImageUrl
+            if FileManager.default.fileExists(atPath: url.path) {
+                observer.onNext(url)
+                observer.onCompleted()
+            }
             
             return Disposables.create()
         }
@@ -45,21 +44,19 @@ class ImageCompressCellViewModel {
         .observe(on: MainScheduler.instance)  // 确保在主线程传递结果
         
         // 加载压缩后的图片
-        let compressedImage = compressedImageURLRelay
-            .flatMap { url -> Observable<UIImage?> in
-                guard let url = url else { return .just(nil) }
-                return Observable.create { observer in
-                    // 在后台队列加载图片
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        let image = UIImage(contentsOfFile: url.path)
-                        observer.onNext(image)
-                        observer.onCompleted()
-                    }
-                    return Disposables.create()
-                }
+        let compressedImage = Observable<URL?>.create { [weak self] observer in
+            guard let self = self else { return Disposables.create() }
+            
+            let url = item.compressedImageURL
+            if FileManager.default.fileExists(atPath: url.path) {
+                observer.onNext(url)
+                observer.onCompleted()
             }
-            .share(replay: 1)
-            .observe(on: MainScheduler.instance)  // 确保在主线程传递结果
+            
+            return Disposables.create()
+        }
+        .share(replay: 1)
+        .observe(on: MainScheduler.instance)  // 确保在主线程传递结果
         
         // 生成信息文本
         let infoText = Observable.combineLatest(
@@ -74,7 +71,7 @@ class ImageCompressCellViewModel {
                     guard let self else { return }
                     var info = self.generateAssetInfo(prefix: "原图")
                     if let compressedImage = compressed {
-                        info += "\n" + self.generateImageInfo(image: compressedImage, prefix: "压缩后")
+                        info += "\n" + self.generateImageInfo(imageUrl: compressedImage, prefix: "压缩后")
                         if let time = item.compressedTime {
                             info += String(format: "\t压缩耗时: %.6f秒", time)
                         }
@@ -102,9 +99,12 @@ class ImageCompressCellViewModel {
         return info
     }
     
-    private func generateImageInfo(image: UIImage, prefix: String) -> String {
-        var info = "\(prefix)尺寸: \(Int(image.size.width))x\(Int(image.size.height))"
+    private func generateImageInfo(imageUrl: URL?, prefix: String) -> String {
+        guard let url = imageUrl, let image = UIImage(contentsOfFile: url.path) else {
+            return ""
+        }
         
+        var info = "\(prefix)尺寸: \(Int(image.size.width))x\(Int(image.size.height))"
         // 在当前队列计算图片大小（因为已经在后台队列了）
         if let imageData = image.jpegData(compressionQuality: 1.0) {
             info += "\t\(prefix)大小: \(String(format: "%.2f", Double(imageData.count) / 1024.0))KB"

@@ -5,7 +5,7 @@
 source 'https://github.com/CocoaPods/Specs.git'
 
 # Uncomment the next line to define a global platform for your project
-platform :ios, '13.0'
+platform :ios, '14.0'
 
 inhibit_all_warnings!
 
@@ -35,7 +35,8 @@ target 'STImageCompressTool_Example' do
   pod 'RxSwift', '~> 6.5.0'
   pod 'RxCocoa', '~> 6.5.0'
   pod 'RxRelay', '~> 6.5.0'
-  
+  pod 'Kingfisher', '8.1.0'
+
   # UI
   pod 'SnapKit'
   
@@ -57,7 +58,7 @@ post_install do |installer|
   installer.pods_project.root_object.attributes["CLASSPREFIX"] = "ST" # 添加 class prefix
   # project编辑配置
   installer.pods_project.build_configurations.each do |config|
-    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
     config.build_settings['CLANG_WARN_DOCUMENTATION_COMMENTS'] = 'NO'
     # xcode15 支持 c++旧版链接器
     # items_append = "$(inherited) -ld64 -ld_classic"
@@ -67,7 +68,7 @@ post_install do |installer|
   # 单个target编辑配置
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0' #修改pod的最低版本
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0' #修改pod的最低版本
 
       # 以下是xcode14 忽略 bundle 类型pod签名
       config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
