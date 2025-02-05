@@ -1,55 +1,194 @@
 PODS:
+  - CYLTabBarController (1.24.2):
+    - CYLTabBarController/Core (= 1.24.2)
+  - CYLTabBarController/Core (1.24.2)
   - Kingfisher (8.1.0)
   - LookinServer/Core (1.2.8)
   - LookinServer/Swift (1.2.8):
     - LookinServer/Core
+  - Masonry (1.1.0)
+  - MBProgressHUD (1.2.0)
+  - MTCategoryComponent (2.0.1):
+    - MTCategoryComponent/Foundation (= 2.0.1)
+    - MTCategoryComponent/MBProgessHUD (= 2.0.1)
+    - MTCategoryComponent/UIKit (= 2.0.1)
+  - MTCategoryComponent/Foundation (2.0.1):
+    - MTCategoryComponent/Foundation/Sources (= 2.0.1)
+  - MTCategoryComponent/Foundation/Sources (2.0.1)
+  - MTCategoryComponent/MBProgessHUD (2.0.1):
+    - Masonry
+    - MTCategoryComponent/UIKit
+  - MTCategoryComponent/UIKit (2.0.1):
+    - MTCategoryComponent/UIKit/UIBarButtonItem (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIColor (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIControl (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIFont (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIImage (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIImageView (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIResponder (= 2.0.1)
+    - MTCategoryComponent/UIKit/UITableView (= 2.0.1)
+    - MTCategoryComponent/UIKit/UITextField (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIView (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIViewController (= 2.0.1)
+    - MTCategoryComponent/UIKit/UIWindow (= 2.0.1)
+  - MTCategoryComponent/UIKit/UIBarButtonItem (2.0.1)
+  - MTCategoryComponent/UIKit/UIColor (2.0.1)
+  - MTCategoryComponent/UIKit/UIControl (2.0.1)
+  - MTCategoryComponent/UIKit/UIFont (2.0.1)
+  - MTCategoryComponent/UIKit/UIImage (2.0.1):
+    - MTCategoryComponent/UIKit/UIColor
+    - MTCategoryComponent/UIKit/UIView
+  - MTCategoryComponent/UIKit/UIImageView (2.0.1)
+  - MTCategoryComponent/UIKit/UIResponder (2.0.1)
+  - MTCategoryComponent/UIKit/UITableView (2.0.1)
+  - MTCategoryComponent/UIKit/UITextField (2.0.1)
+  - MTCategoryComponent/UIKit/UIView (2.0.1):
+    - Masonry
+    - MTCategoryComponent/UIKit/UIColor
+  - MTCategoryComponent/UIKit/UIViewController (2.0.1):
+    - MBProgressHUD
+    - MTCategoryComponent/UIKit/UIColor
+    - Toast
+  - MTCategoryComponent/UIKit/UIWindow (2.0.1)
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
+  - RxGesture (4.0.4):
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
   - RxRelay (6.5.0):
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
   - SnapKit (4.2.0)
+  - STAllBase (0.0.1):
+    - CYLTabBarController
+    - Kingfisher
+    - MTCategoryComponent
+    - RxCocoa
+    - RxGesture
+    - RxRelay
+    - RxSwift
+    - SnapKit
+    - STAnnotation
+    - STComponentTools
+    - STImageCompressTool
+    - STModuleService.swift
+    - STRoutServiceDefine
+  - STAnnotation (0.0.1)
+  - STBaseModel (0.0.1)
+  - STComponentTools (0.0.5):
+    - STComponentTools/STModuleService (= 0.0.5)
+    - STComponentTools/STRouter (= 0.0.5)
+  - STComponentTools/STModuleService (0.0.5):
+    - STAnnotation
+  - STComponentTools/STRouter (0.0.5):
+    - STAnnotation
   - STImageCompressTool (0.0.1):
     - Kingfisher
     - YYKit
+  - STModuleService.swift (0.0.1):
+    - STComponentTools/STModuleService
+  - STPreivewModule (0.0.1):
+    - STAllBase
+    - STBaseModel
+  - STRoutServiceDefine (0.0.1)
+  - Toast (4.1.1)
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
   - YYKit/no-arc (1.0.9)
 
 DEPENDENCIES:
+  - CYLTabBarController (~> 1.24.0)
   - Kingfisher (= 8.1.0)
   - LookinServer/Swift
+  - MTCategoryComponent (from `https://github.com/STTechnology5652/MTCategoryComponent.git`)
   - RxCocoa (~> 6.5.0)
+  - RxGesture (~> 4.0.4)
   - RxRelay (~> 6.5.0)
   - RxSwift (~> 6.5.0)
   - SnapKit
+  - STAllBase (from `../Components/STAllBase`)
+  - STAnnotation (from `https://github.com/stephen5652/STAnnotation.git`)
+  - STBaseModel (from `../Components/STBaseModel`)
+  - STComponentTools (from `https://github.com/STTechnology5652/STComponentTools.git`, tag `0.0.5`)
   - STImageCompressTool (from `../../STImageCompressTool`)
+  - STModuleService.swift (from `https://github.com/STTechnology5652/STModuleService.swift.git`)
+  - STPreivewModule (from `../Components/STPreivewModule`)
+  - STRoutServiceDefine (from `../Components/STRoutServiceDefine`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
+    - CYLTabBarController
     - Kingfisher
     - LookinServer
+    - Masonry
+    - MBProgressHUD
     - RxCocoa
+    - RxGesture
     - RxRelay
     - RxSwift
     - SnapKit
+    - Toast
     - YYKit
 
 EXTERNAL SOURCES:
+  MTCategoryComponent:
+    :git: https://github.com/STTechnology5652/MTCategoryComponent.git
+  STAllBase:
+    :path: "../Components/STAllBase"
+  STAnnotation:
+    :git: https://github.com/stephen5652/STAnnotation.git
+  STBaseModel:
+    :path: "../Components/STBaseModel"
+  STComponentTools:
+    :git: https://github.com/STTechnology5652/STComponentTools.git
+    :tag: 0.0.5
   STImageCompressTool:
     :path: "../../STImageCompressTool"
+  STModuleService.swift:
+    :git: https://github.com/STTechnology5652/STModuleService.swift.git
+  STPreivewModule:
+    :path: "../Components/STPreivewModule"
+  STRoutServiceDefine:
+    :path: "../Components/STRoutServiceDefine"
+
+CHECKOUT OPTIONS:
+  MTCategoryComponent:
+    :commit: d5efa357419a55913d179da95b6c3d66b7d7c161
+    :git: https://github.com/STTechnology5652/MTCategoryComponent.git
+  STAnnotation:
+    :commit: 87236390460337eb1044958a196b7349ebaa9c0b
+    :git: https://github.com/stephen5652/STAnnotation.git
+  STComponentTools:
+    :git: https://github.com/STTechnology5652/STComponentTools.git
+    :tag: 0.0.5
+  STModuleService.swift:
+    :commit: fa478f156073d50ca0b5f86dccb0e8748d6f128a
+    :git: https://github.com/STTechnology5652/STModuleService.swift.git
 
 SPEC CHECKSUMS:
+  CYLTabBarController: e7440ad0992edfb8ac14a6c793f43aa636c5cba5
   Kingfisher: dfbf20b6249ed4ef6f18d6a96c847bce860bdb95
   LookinServer: 1b2b61c6402ae29fa22182d48f5cd067b4e99e80
+  Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
+  MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
+  MTCategoryComponent: 4a4a34e58b9504703a321b92c6f20e77b3922b98
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxGesture: f3efb47ed2d26a8082f7b660d4a59970e275a7f8
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  STImageCompressTool: 01e70330cb97aaff1bbeb17bc2a9ec12419a2da7
+  STAllBase: 93c4f6be67594c40ba8b3dd416bd8d8596c1a417
+  STAnnotation: 6a643e7da657f4e9176f2cce2df4d1d1f7697a91
+  STBaseModel: a17bcb324eba036ae93e1d7b636f4c48e11ae375
+  STComponentTools: ca1aa401d7b8a47a99cd0ce8c85ad81499fa1409
+  STImageCompressTool: 9fc2453c2fb2d18c46aa237ba75f816897a96084
+  STModuleService.swift: 2d12d375ea036657258959ee90db9789555dcd40
+  STPreivewModule: 621c1e5a838ffcb35025151ae5ceebb18a455d8a
+  STRoutServiceDefine: f6173168c1d74af095d0ee9a471096f261ca64a6
+  Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 6edce0ca79d9291cb53eede5ce7adcb8faf4ea26
+PODFILE CHECKSUM: 3360626041c181ae34ed1d1315582317c7708e7f
 
 COCOAPODS: 1.14.3

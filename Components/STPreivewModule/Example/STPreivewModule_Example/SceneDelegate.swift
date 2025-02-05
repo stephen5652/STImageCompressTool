@@ -1,8 +1,8 @@
 //
 //  SceneDelegate.swift
-//  STImageCompressTool_Example
+//  STPreivewModule_Example
 //
-//  Created by stephenchen on 2025/01/23.
+//  Created by stephenchen on 2025/02/05.
 //
 
 import UIKit

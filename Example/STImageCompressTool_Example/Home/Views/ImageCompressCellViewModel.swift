@@ -2,12 +2,19 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxRelay
+import RxGesture
+
 import Photos
+import STBaseModel
+import STAllBase
 
 class ImageCompressCellViewModel {
     
     // MARK: - Input/Output
-    struct Input {}
+    struct Input {
+        let originalImageTap: Observable<Void>
+        let compressedImageTap: Observable<Void>
+    }
     
     struct Output {
         let originalImage: Driver<URL?>
@@ -40,8 +47,8 @@ class ImageCompressCellViewModel {
             
             return Disposables.create()
         }
-        .share(replay: 1)
-        .observe(on: MainScheduler.instance)  // 确保在主线程传递结果
+            .share(replay: 1)
+            .observe(on: MainScheduler.instance)  // 确保在主线程传递结果
         
         // 加载压缩后的图片
         let compressedImage = Observable<URL?>.create { [weak self] observer in
@@ -55,34 +62,46 @@ class ImageCompressCellViewModel {
             
             return Disposables.create()
         }
-        .share(replay: 1)
-        .observe(on: MainScheduler.instance)  // 确保在主线程传递结果
+            .share(replay: 1)
+            .observe(on: MainScheduler.instance)  // 确保在主线程传递结果
         
         // 生成信息文本
         let infoText = Observable.combineLatest(
             originalImage,
             compressedImage
         )
-        .flatMap { [weak self] original, compressed -> Observable<String> in
-            guard let self = self else { return .just("") }
-            
-            return Observable.create { observer in
-                DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                    guard let self else { return }
-                    var info = self.generateAssetInfo(prefix: "原图")
-                    if let compressedImage = compressed {
-                        info += "\n" + self.generateImageInfo(imageUrl: compressedImage, prefix: "压缩后")
-                        if let time = item.compressedTime {
-                            info += String(format: "\t压缩耗时: %.6f秒", time)
+            .flatMap { [weak self] original, compressed -> Observable<String> in
+                guard let self = self else { return .just("") }
+                
+                return Observable.create { observer in
+                    DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                        guard let self else { return }
+                        var info = self.generateAssetInfo(prefix: "原图")
+                        if let compressedImage = compressed {
+                            info += "\n" + self.generateImageInfo(imageUrl: compressedImage, prefix: "压缩后")
+                            if let time = item.compressedTime {
+                                info += String(format: "\t压缩耗时: %.6f秒", time)
+                            }
                         }
+                        observer.onNext(info)
+                        observer.onCompleted()
                     }
-                    observer.onNext(info)
-                    observer.onCompleted()
+                    return Disposables.create()
                 }
-                return Disposables.create()
             }
-        }
-        .observe(on: MainScheduler.instance)
+            .observe(on: MainScheduler.instance)
+        
+        input.originalImageTap
+            .subscribe(onNext: { [weak self] _ in
+                self?.showOrinalImage(self?.item.orignalImageUrl)
+            })
+            .disposed(by: disposeBag)
+        
+        input.compressedImageTap
+            .subscribe(onNext: { [weak self] _ in
+                self?.showCompressedImage(self?.item.compressedImageURL)
+            })
+            .disposed(by: disposeBag)
         
         return Output(
             originalImage: originalImage.asDriver(onErrorJustReturn: nil),
@@ -92,6 +111,32 @@ class ImageCompressCellViewModel {
     }
     
     // MARK: - Private Methods
+    private func showOrinalImage(_ url: URL?) {
+        guard let url else {
+            return
+        }
+        
+        let request = STRouterUrlRequest.instance { builder in
+            builder.urlToOpen = STRouterDefine.kRouter_PreviewImage
+            builder.parameter[STRouterDefine.kRouterKey_Item] = self.item
+            builder.parameter[STRouterDefine.kRouterKey_Url] = url
+        }
+        STRouter.shareInstance().stOpenUrl(request)
+    }
+    
+    private func showCompressedImage(_ url: URL?) {
+        guard let url else {
+            return
+        }
+        
+        let request = STRouterUrlRequest.instance { builder in
+            builder.urlToOpen = STRouterDefine.kRouter_PreviewImage
+            builder.parameter[STRouterDefine.kRouterKey_Item] = self.item
+            builder.parameter[STRouterDefine.kRouterKey_Url] = url
+        }
+        STRouter.shareInstance().stOpenUrl(request)
+    }
+    
     private func generateAssetInfo(prefix: String) -> String {
         var info = "\(prefix)尺寸: \(item.asset.pixelWidth)x\(item.asset.pixelHeight)"
         info += "\t\(prefix)大小: \(String(format: "%.2f", Double(item.imageFileSize) / 1024.0))KB"
@@ -112,4 +157,4 @@ class ImageCompressCellViewModel {
         
         return info
     }
-} 
+}

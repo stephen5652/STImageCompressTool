@@ -7,33 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		59CF9B4E5DFEB438EAD93013 /* Pods_STImageCompressTool_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */; };
-		CEB0577E2D53080C007CAAC6 /* STEmptyOc.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB0577D2D53080C007CAAC6 /* STEmptyOc.m */; };
-		CEB057832D530EE8007CAAC6 /* STRouterRegist.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB057812D530EE8007CAAC6 /* STRouterRegist.swift */; };
-		CEB0578E2D531A8D007CAAC6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB0578B2D531A8D007CAAC6 /* ViewController.swift */; };
-		CEB0578F2D531A8D007CAAC6 /* ImageCompressCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB057892D531A8D007CAAC6 /* ImageCompressCellViewModel.swift */; };
-		CEB057902D531A8D007CAAC6 /* ImageCompressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB057882D531A8D007CAAC6 /* ImageCompressCell.swift */; };
-		CEB057912D531A8D007CAAC6 /* ImageCompressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB057842D531A8D007CAAC6 /* ImageCompressViewModel.swift */; };
+		52C236D2912DC786124EBDF9 /* Pods_STPreivewModule_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BB606A76057493E864E2A17 /* Pods_STPreivewModule_Example.framework */; };
 		FDDD8566299DED6500EAB62E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDD8565299DED6500EAB62E /* AppDelegate.swift */; };
+		FDDD8568299DED6500EAB62E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDD8567299DED6500EAB62E /* SceneDelegate.swift */; };
+		FDDD856A299DED6500EAB62E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDDD8569299DED6500EAB62E /* ViewController.swift */; };
 		FDDD856D299DED6500EAB62E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDDD856B299DED6500EAB62E /* Main.storyboard */; };
 		FDDD856F299DED6600EAB62E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FDDD856E299DED6600EAB62E /* Assets.xcassets */; };
 		FDDD8572299DED6600EAB62E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FDDD8570299DED6600EAB62E /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		177A02303F62890C8B8C283A /* Pods-STImageCompressTool_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STImageCompressTool_Example.release.xcconfig"; path = "Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example.release.xcconfig"; sourceTree = "<group>"; };
-		474C61EA88E4AA26930D75E7 /* Pods-STImageCompressTool_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STImageCompressTool_Example.debug.xcconfig"; path = "Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_STImageCompressTool_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CEB0577B2D53080B007CAAC6 /* STImageCompressTool_Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "STImageCompressTool_Example-Bridging-Header.h"; sourceTree = "<group>"; };
-		CEB0577C2D53080C007CAAC6 /* STEmptyOc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = STEmptyOc.h; sourceTree = "<group>"; };
-		CEB0577D2D53080C007CAAC6 /* STEmptyOc.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = STEmptyOc.m; sourceTree = "<group>"; };
-		CEB057812D530EE8007CAAC6 /* STRouterRegist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STRouterRegist.swift; sourceTree = "<group>"; };
-		CEB057842D531A8D007CAAC6 /* ImageCompressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressViewModel.swift; sourceTree = "<group>"; };
-		CEB057882D531A8D007CAAC6 /* ImageCompressCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressCell.swift; sourceTree = "<group>"; };
-		CEB057892D531A8D007CAAC6 /* ImageCompressCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCompressCellViewModel.swift; sourceTree = "<group>"; };
-		CEB0578B2D531A8D007CAAC6 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		FDDD8562299DED6500EAB62E /* STImageCompressTool_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = STImageCompressTool_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		60A97ACCB364CBBC7195F271 /* Pods-STPreivewModule_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STPreivewModule_Example.release.xcconfig"; path = "Target Support Files/Pods-STPreivewModule_Example/Pods-STPreivewModule_Example.release.xcconfig"; sourceTree = "<group>"; };
+		7A6BF0044EDCA6F839618BAB /* Pods-STPreivewModule_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STPreivewModule_Example.debug.xcconfig"; path = "Target Support Files/Pods-STPreivewModule_Example/Pods-STPreivewModule_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		8BB606A76057493E864E2A17 /* Pods_STPreivewModule_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_STPreivewModule_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FDDD8562299DED6500EAB62E /* STPreivewModule_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = STPreivewModule_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FDDD8565299DED6500EAB62E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		FDDD8567299DED6500EAB62E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		FDDD8569299DED6500EAB62E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FDDD856C299DED6500EAB62E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FDDD856E299DED6600EAB62E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FDDD8571299DED6600EAB62E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -45,120 +35,82 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				59CF9B4E5DFEB438EAD93013 /* Pods_STImageCompressTool_Example.framework in Frameworks */,
+				52C236D2912DC786124EBDF9 /* Pods_STPreivewModule_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0281E4660F016E5A301E695F /* Pods */ = {
+		AE8C1A2C316D5432688C9886 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				474C61EA88E4AA26930D75E7 /* Pods-STImageCompressTool_Example.debug.xcconfig */,
-				177A02303F62890C8B8C283A /* Pods-STImageCompressTool_Example.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		CEB057822D530EE8007CAAC6 /* RouterServiceRegist */ = {
-			isa = PBXGroup;
-			children = (
-				CEB057812D530EE8007CAAC6 /* STRouterRegist.swift */,
-			);
-			path = RouterServiceRegist;
-			sourceTree = "<group>";
-		};
-		CEB057852D531A8D007CAAC6 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				CEB057842D531A8D007CAAC6 /* ImageCompressViewModel.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
-		CEB0578A2D531A8D007CAAC6 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				CEB057882D531A8D007CAAC6 /* ImageCompressCell.swift */,
-				CEB057892D531A8D007CAAC6 /* ImageCompressCellViewModel.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		CEB0578C2D531A8D007CAAC6 /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				CEB057852D531A8D007CAAC6 /* ViewModel */,
-				CEB0578A2D531A8D007CAAC6 /* Views */,
-				CEB0578B2D531A8D007CAAC6 /* ViewController.swift */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
-		F7749A774A4E0E7BCC80A4AA /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */,
+				8BB606A76057493E864E2A17 /* Pods_STPreivewModule_Example.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		AEB2FFF2EF605C1C5B752F25 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				7A6BF0044EDCA6F839618BAB /* Pods-STPreivewModule_Example.debug.xcconfig */,
+				60A97ACCB364CBBC7195F271 /* Pods-STPreivewModule_Example.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		FDDD8559299DED6500EAB62E = {
 			isa = PBXGroup;
 			children = (
-				FDDD8564299DED6500EAB62E /* STImageCompressTool_Example */,
+				FDDD8564299DED6500EAB62E /* STPreivewModule_Example */,
 				FDDD8563299DED6500EAB62E /* Products */,
-				0281E4660F016E5A301E695F /* Pods */,
-				F7749A774A4E0E7BCC80A4AA /* Frameworks */,
+				AEB2FFF2EF605C1C5B752F25 /* Pods */,
+				AE8C1A2C316D5432688C9886 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
 		FDDD8563299DED6500EAB62E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FDDD8562299DED6500EAB62E /* STImageCompressTool_Example.app */,
+				FDDD8562299DED6500EAB62E /* STPreivewModule_Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		FDDD8564299DED6500EAB62E /* STImageCompressTool_Example */ = {
+		FDDD8564299DED6500EAB62E /* STPreivewModule_Example */ = {
 			isa = PBXGroup;
 			children = (
 				FDDD8565299DED6500EAB62E /* AppDelegate.swift */,
-				CEB0577C2D53080C007CAAC6 /* STEmptyOc.h */,
-				CEB0577D2D53080C007CAAC6 /* STEmptyOc.m */,
-				CEB0578C2D531A8D007CAAC6 /* Home */,
-				CEB057822D530EE8007CAAC6 /* RouterServiceRegist */,
+				FDDD8567299DED6500EAB62E /* SceneDelegate.swift */,
+				FDDD8569299DED6500EAB62E /* ViewController.swift */,
 				FDDD856B299DED6500EAB62E /* Main.storyboard */,
 				FDDD856E299DED6600EAB62E /* Assets.xcassets */,
 				FDDD8570299DED6600EAB62E /* LaunchScreen.storyboard */,
 				FDDD8573299DED6600EAB62E /* Info.plist */,
-				CEB0577B2D53080B007CAAC6 /* STImageCompressTool_Example-Bridging-Header.h */,
 			);
-			path = STImageCompressTool_Example;
+			path = STPreivewModule_Example;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		FDDD8561299DED6500EAB62E /* STImageCompressTool_Example */ = {
+		FDDD8561299DED6500EAB62E /* STPreivewModule_Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = FDDD8576299DED6600EAB62E /* Build configuration list for PBXNativeTarget "STImageCompressTool_Example" */;
+			buildConfigurationList = FDDD8576299DED6600EAB62E /* Build configuration list for PBXNativeTarget "STPreivewModule_Example" */;
 			buildPhases = (
-				00E6BB5F4C8C3AB5F8295AF0 /* [CP] Check Pods Manifest.lock */,
+				18251AE67FF75051A264C7BA /* [CP] Check Pods Manifest.lock */,
 				FDDD855E299DED6500EAB62E /* Sources */,
 				FDDD855F299DED6500EAB62E /* Frameworks */,
 				FDDD8560299DED6500EAB62E /* Resources */,
-				E5514B3EA63EB85207CF88F6 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = STImageCompressTool_Example;
-			productName = STImageCompressTool_Example;
-			productReference = FDDD8562299DED6500EAB62E /* STImageCompressTool_Example.app */;
+			name = STPreivewModule_Example;
+			productName = STPreivewModule_Example;
+			productReference = FDDD8562299DED6500EAB62E /* STPreivewModule_Example.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -174,11 +126,10 @@
 				TargetAttributes = {
 					FDDD8561299DED6500EAB62E = {
 						CreatedOnToolsVersion = 14.1;
-						LastSwiftMigration = 1620;
 					};
 				};
 			};
-			buildConfigurationList = FDDD855D299DED6500EAB62E /* Build configuration list for PBXProject "STImageCompressTool_Example" */;
+			buildConfigurationList = FDDD855D299DED6500EAB62E /* Build configuration list for PBXProject "STPreivewModule_Example" */;
 			compatibilityVersion = "Xcode 13.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -191,7 +142,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				FDDD8561299DED6500EAB62E /* STImageCompressTool_Example */,
+				FDDD8561299DED6500EAB62E /* STPreivewModule_Example */,
 			);
 		};
 /* End PBXProject section */
@@ -210,7 +161,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		00E6BB5F4C8C3AB5F8295AF0 /* [CP] Check Pods Manifest.lock */ = {
+		18251AE67FF75051A264C7BA /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -225,28 +176,11 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-STImageCompressTool_Example-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-STPreivewModule_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E5514B3EA63EB85207CF88F6 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -256,13 +190,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CEB0578E2D531A8D007CAAC6 /* ViewController.swift in Sources */,
-				CEB0578F2D531A8D007CAAC6 /* ImageCompressCellViewModel.swift in Sources */,
-				CEB057902D531A8D007CAAC6 /* ImageCompressCell.swift in Sources */,
-				CEB057912D531A8D007CAAC6 /* ImageCompressViewModel.swift in Sources */,
+				FDDD856A299DED6500EAB62E /* ViewController.swift in Sources */,
 				FDDD8566299DED6500EAB62E /* AppDelegate.swift in Sources */,
-				CEB057832D530EE8007CAAC6 /* STRouterRegist.swift in Sources */,
-				CEB0577E2D53080C007CAAC6 /* STEmptyOc.m in Sources */,
+				FDDD8568299DED6500EAB62E /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,7 +268,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -392,7 +322,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -404,32 +334,27 @@
 		};
 		FDDD8577299DED6600EAB62E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 474C61EA88E4AA26930D75E7 /* Pods-STImageCompressTool_Example.debug.xcconfig */;
+			baseConfigurationReference = 7A6BF0044EDCA6F839618BAB /* Pods-STPreivewModule_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GCTMPJ4V33;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = STImageCompressTool_Example/Info.plist;
+				INFOPLIST_FILE = STPreivewModule_Example/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "yk.STImageCompressTool-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "yk.STPreivewModule-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "STImageCompressTool_Example/STImageCompressTool_Example-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -437,31 +362,27 @@
 		};
 		FDDD8578299DED6600EAB62E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 177A02303F62890C8B8C283A /* Pods-STImageCompressTool_Example.release.xcconfig */;
+			baseConfigurationReference = 60A97ACCB364CBBC7195F271 /* Pods-STPreivewModule_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = GCTMPJ4V33;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = STImageCompressTool_Example/Info.plist;
+				INFOPLIST_FILE = STPreivewModule_Example/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = "$(inherited)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "yk.STImageCompressTool-Example";
+				PRODUCT_BUNDLE_IDENTIFIER = "yk.STPreivewModule-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "STImageCompressTool_Example/STImageCompressTool_Example-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -470,7 +391,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		FDDD855D299DED6500EAB62E /* Build configuration list for PBXProject "STImageCompressTool_Example" */ = {
+		FDDD855D299DED6500EAB62E /* Build configuration list for PBXProject "STPreivewModule_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FDDD8574299DED6600EAB62E /* Debug */,
@@ -479,7 +400,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FDDD8576299DED6600EAB62E /* Build configuration list for PBXNativeTarget "STImageCompressTool_Example" */ = {
+		FDDD8576299DED6600EAB62E /* Build configuration list for PBXNativeTarget "STPreivewModule_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FDDD8577299DED6600EAB62E /* Debug */,

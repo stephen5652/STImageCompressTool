@@ -1,11 +1,12 @@
 #私有源
 # source 'xxxxx'
+source "https://github.com/STTechnology5652/STSpecs.git"
 
 #cocoapods源 最后声明, 可以解决私有源pod 与 公共源pod 重名的问题
 source 'https://github.com/CocoaPods/Specs.git'
 
 # Uncomment the next line to define a global platform for your project
-platform :ios, '14.0'
+platform :ios, '9.0'
 
 inhibit_all_warnings!
 
@@ -21,49 +22,16 @@ end
 def pod_develop
   dir = '../../'
   arr = [
-  'STImageCompressTool'
+  'STPreivewModule'
   ]
    st_installLocalPods(dir, arr)
 end
 
-def pod_components
-  dir = '../Components/'
-  arr = [
-  'STRoutServiceDefine',
-  'STPreivewModule',
-  'STAllBase',
-  'STBaseModel',
-  ]
-   st_installLocalPods(dir, arr)
-end
-
-project 'STImageCompressTool_Example.xcodeproj'
-target 'STImageCompressTool_Example' do
-  # Pods for STImageCompressTool_Example
+project 'STPreivewModule_Example.xcodeproj'
+target 'STPreivewModule_Example' do
+  # Pods for STPreivewModule_Example
   pod_develop
-  pod_components
-  
-  # RxSwift
-  pod 'RxSwift', '~> 6.5.0'
-  pod 'RxCocoa', '~> 6.5.0'
-  pod 'RxRelay', '~> 6.5.0'
-  pod 'RxGesture', '~> 4.0.4'
-  
-  pod 'Kingfisher', '8.1.0'
-  pod 'MTCategoryComponent', :git => "https://github.com/STTechnology5652/MTCategoryComponent.git"
-  
-  pod 'STAnnotation', :git => "https://github.com/stephen5652/STAnnotation.git"
-  pod 'STComponentTools', :git => "https://github.com/STTechnology5652/STComponentTools.git", :tag => '0.0.5'
-  pod 'STModuleService.swift', :git => "https://github.com/STTechnology5652/STModuleService.swift.git"
 
-  # UI
-  pod 'SnapKit'
-  pod 'CYLTabBarController', '~> 1.24.0'
-  
-  
-  # UI 调试
-  pod 'LookinServer', :subspecs => ['Swift'], :configurations => ['Debug', 'Release']
-  
 end
 
 def pod_string_item_appen(item_str, append_str)
@@ -78,7 +46,7 @@ post_install do |installer|
   installer.pods_project.root_object.attributes["CLASSPREFIX"] = "ST" # 添加 class prefix
   # project编辑配置
   installer.pods_project.build_configurations.each do |config|
-    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0'
     config.build_settings['CLANG_WARN_DOCUMENTATION_COMMENTS'] = 'NO'
     # xcode15 支持 c++旧版链接器
     # items_append = "$(inherited) -ld64 -ld_classic"
@@ -88,20 +56,12 @@ post_install do |installer|
   # 单个target编辑配置
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
-      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0' #修改pod的最低版本
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '10.0' #修改pod的最低版本
 
       # 以下是xcode14 忽略 bundle 类型pod签名
       config.build_settings['EXPANDED_CODE_SIGN_IDENTITY'] = ""
       config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
       config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
-
-      config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
-      # 确保所有 target 使用相同的 Swift 版本
-      config.build_settings['SWIFT_VERSION'] = '5.0'
-
-      # 移除写入相册权限
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)']
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] << 'PERMISSION_PHOTOS=0'
     end
   end
 end

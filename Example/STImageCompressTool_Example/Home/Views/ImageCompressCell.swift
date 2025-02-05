@@ -5,11 +5,28 @@ import RxCocoa
 import RxRelay
 import Kingfisher
 import STImageCompressTool
+import RxGesture
 
 class ImageCompressCell: UITableViewCell {
     static let identifier = "ImageCompressCell"
     
     // MARK: - UI Components
+    private lazy var originalTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "原图"
+        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private lazy var compressedTitleLabel: UILabel = {
+        let label = UILabel()
+        label.text = "压缩后"
+        label.font = .systemFont(ofSize: 14, weight: .medium)
+        label.textAlignment = .center
+        return label
+    }()
+    
     private lazy var originalImageView: AnimatedImageView = {
         let imageView = AnimatedImageView()
         imageView.contentMode = .scaleAspectFit
@@ -62,22 +79,34 @@ class ImageCompressCell: UITableViewCell {
     // MARK: - UI Setup
     private func setupUI() {
         selectionStyle = .none
+        contentView.addSubview(originalTitleLabel)
+        contentView.addSubview(compressedTitleLabel)
         contentView.addSubview(originalImageView)
         contentView.addSubview(compressedImageView)
         contentView.addSubview(infoLabel)
         
         // 设置固定的 cell 高度
-        contentView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+        contentView.heightAnchor.constraint(equalToConstant: 220).isActive = true
+        
+        originalTitleLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(originalImageView)
+            make.bottom.equalTo(originalImageView.snp.top).offset(-5)
+        }
+        
+        compressedTitleLabel.snp.makeConstraints { make in
+            make.centerX.equalTo(compressedImageView)
+            make.bottom.equalTo(compressedImageView.snp.top).offset(-5)
+        }
         
         originalImageView.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(16)
-            make.top.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(30)
             make.width.height.equalTo(120)
         }
         
         compressedImageView.snp.makeConstraints { make in
             make.right.equalToSuperview().offset(-16)
-            make.top.equalToSuperview().offset(10)
+            make.top.equalToSuperview().offset(30)
             make.width.height.equalTo(120)
         }
         
@@ -93,7 +122,10 @@ class ImageCompressCell: UITableViewCell {
     func configure(with viewModel: ImageCompressCellViewModel) {
         self.viewModel = viewModel
         
-        let input = ImageCompressCellViewModel.Input()
+        let input = ImageCompressCellViewModel.Input(
+            originalImageTap: originalImageView.rx.tapGesture().when(.recognized).map { _ in () },
+            compressedImageTap: compressedImageView.rx.tapGesture().when(.recognized).map { _ in () }
+        )
         
         let output = viewModel.transform(input)
         

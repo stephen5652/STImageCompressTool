@@ -12,6 +12,7 @@ import RxSwift
 import RxCocoa
 import SnapKit
 import Photos
+import STBaseModel
 
 class ViewController: UIViewController, UITableViewDelegate {
     

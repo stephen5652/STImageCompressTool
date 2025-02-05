@@ -1,0 +1,39 @@
+PODS:
+  - STAnnotation (0.0.1)
+  - STComponentTools/STModuleService (0.0.4):
+    - STAnnotation
+  - STComponentTools/STRouter (0.0.4):
+    - STAnnotation
+    - YYModel
+  - STModuleService.swift (0.0.1):
+    - STComponentTools/STModuleService
+  - STPreivewModule (0.0.1):
+    - STComponentTools/STRouter
+    - STModuleService.swift
+  - YYModel (1.0.4)
+
+DEPENDENCIES:
+  - STPreivewModule (from `../../STPreivewModule`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - YYModel
+  https://github.com/STTechnology5652/STSpecs.git:
+    - STAnnotation
+    - STComponentTools
+    - STModuleService.swift
+
+EXTERNAL SOURCES:
+  STPreivewModule:
+    :path: "../../STPreivewModule"
+
+SPEC CHECKSUMS:
+  STAnnotation: ea0dcdbf740b57237d29384c521e4887d00031df
+  STComponentTools: 18392702fe5112d19fca12b29e159594f75045a4
+  STModuleService.swift: 89031936975f616a759d8496e9d9ad757c04fba0
+  STPreivewModule: 3426233f42a9ff0f871b7cf9d613ae66be11ab3b
+  YYModel: 2a7fdd96aaa4b86a824e26d0c517de8928c04b30
+
+PODFILE CHECKSUM: 6997d50331a95890e44c0ca9b65a695c3d45d55a
+
+COCOAPODS: 1.14.3

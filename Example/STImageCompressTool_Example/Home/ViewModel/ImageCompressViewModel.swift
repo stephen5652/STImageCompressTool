@@ -3,6 +3,7 @@ import RxSwift
 import RxCocoa
 import Photos
 import STImageCompressTool
+import STBaseModel
 
 protocol ImageCompressViewModelType {
     func transform(_ input: ImageCompressViewModel.Input) -> ImageCompressViewModel.Output

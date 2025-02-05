@@ -1,36 +1,36 @@
 Pod::Spec.new do |spec|
 
-  spec.name         = "STImageCompressTool"
+  spec.name         = "STBaseModel"
   spec.version      = "0.0.1"
-  spec.summary      = "STImageCompressTool 说明."
+  spec.summary      = "STBaseModel 说明."
   spec.description      = <<-DESC
-  STImageCompressTool long description of the pod here.
+  STBaseModel long description of the pod here.
   DESC
 
-  spec.homepage         = 'http://github.com/stephenchen/STImageCompressTool'
+  spec.homepage         = 'http://github.com/stephenchen/STBaseModel'
   spec.license      = { :type => "MIT", :file => "LICENSE" }
   spec.author             = { "stephenchen" => "stephen.chen@hellotalk.cn" }
   spec.ios.deployment_target = '9.0'
 
-  spec.source       = { :git => "http://github/stephenchen/STImageCompressTool.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "http://github/stephenchen/STBaseModel.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  spec.source_files = 'STImageCompressTool/{Public,Private}/**/*.{h,m,mm,c,cpp,swift}'
-  # spec.exclude_files = "STImageCompressTool/Exclude" #排除文件
+  spec.source_files = 'STBaseModel/{Public,Private}/**/*.{h,m,mm,c,cpp,swift}'
+  # spec.exclude_files = "STBaseModel/Exclude" #排除文件
 
-  spec.project_header_files = 'STImageCompressTool/Private/**/*.{h}'
-  spec.public_header_files = 'STImageCompressTool/Public/**/*.h' #此处放置组件的对外暴漏的头文件
+  spec.project_header_files = 'STBaseModel/Private/**/*.{h}'
+  spec.public_header_files = 'STBaseModel/Public/**/*.h' #此处放置组件的对外暴漏的头文件
 
   # ――― binary framework/lib ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #spec.vendored_frameworks = 'STImageCompressTool/Private/**/*.framework'
-  #spec.vendored_libraries = 'STImageCompressTool/Private/**/*.a'
+  #spec.vendored_frameworks = 'STBaseModel/Private/**/*.framework'
+  #spec.vendored_libraries = 'STBaseModel/Private/**/*.a'
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   # 放置 json,font,jpg,png等资源
-  #  spec.resources = ["STImageCompressTool/{Public,Private}/**/*.{xib}"]
+  #  spec.resources = ["STBaseModel/{Public,Private}/**/*.{xib}"]
   #  spec.resource_bundles = {
-  #    'STImageCompressTool' => ['STImageCompressTool/Assets/*.xcassets', "STImageCompressTool/{Public,Private}/**/*.{png,jpg,font,json}"]
+  #    'STBaseModel' => ['STBaseModel/Assets/*.xcassets', "STBaseModel/{Public,Private}/**/*.{png,jpg,font,json}"]
   #  }
 
 
@@ -47,8 +47,7 @@ Pod::Spec.new do |spec|
   # spec.xcconfig = { "HEADER_SEARCH_PATHS" => "$(SDKROOT)/usr/include/libxml2" }
 
   # 其他依赖pod
-   spec.dependency "YYKit"
-   spec.dependency "Kingfisher"
+  # spec.dependency "XXXXXXXX"
 
 #   spec.subspec 'WithLoad' do |ss|
 #       ss.source_files = 'YKHawkeye/Src/MethodUseTime/**/*{.h,.m}'
