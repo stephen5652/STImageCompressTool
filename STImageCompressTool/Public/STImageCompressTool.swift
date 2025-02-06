@@ -55,7 +55,9 @@ public struct STImageCompressTool {
         guard var imageData = image.jpegData(compressionQuality: compression) else { return nil }
         
         // 如果已经小于目标大小，直接返回
-        if CGFloat(imageData.count) <= maxFileSize { return imageData }
+        if CGFloat(imageData.count) <= maxFileSize {
+            return imageData
+        }
         
         // 二分法查找最佳压缩率
         var minCompression: CGFloat = 0

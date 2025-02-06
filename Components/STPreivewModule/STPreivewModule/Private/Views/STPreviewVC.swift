@@ -44,6 +44,7 @@ class STPreviewVC: STBaseVC {
     }
     
     private func loadImage() {
+        print("preview image: \(url.path)")
         imageView.kfSetImage(localPath: url.path)
     }
     

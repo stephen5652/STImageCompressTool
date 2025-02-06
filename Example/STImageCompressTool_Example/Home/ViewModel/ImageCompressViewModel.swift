@@ -114,7 +114,7 @@ class ImageCompressViewModel: ImageCompressViewModelType {
                     
                     fm.createFile(atPath: orignalImageUrl.path, contents: nil)
                     try data.write(to: orignalImageUrl)
-
+                    
                     print("get orignal image success:\(asset.localIdentifier)")
                     completion(item)
                 } catch {
@@ -143,9 +143,11 @@ class ImageCompressViewModel: ImageCompressViewModelType {
                 if item.imageType == .gif {
                     compressedData = UIImage.compressGIFData(with: orignalData, limitDataSize: 1024 * 1024 * 5)
                 } else {
-                    compressedData = UIImage.compressImageData(orignalData, toMaxFileSize: 1024 * 1024 * 5)
+                    compressedData = try? UIImage.lubanCompress(imageData: orignalData)
+                    
                 }
-                
+                print("compress image finish:\(item.imageType.rawValue)\t[\(compressedData?.count ?? 0)]")
+
                 try compressedData?.write(to: compressedImageURL)
                 var updateItem = item
                 updateItem.compressedTime = Date().timeIntervalSince(startDate)

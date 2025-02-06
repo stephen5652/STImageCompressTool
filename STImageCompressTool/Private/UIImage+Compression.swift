@@ -40,7 +40,7 @@ extension UIImage {
         
         return self
     }
-
+    
     /// 图片压缩
     /// - Parameter imageData: 目标图片数据
     /// - Returns: 压缩结果
@@ -49,10 +49,24 @@ extension UIImage {
         guard let image = UIImage(data: imageData) else {
             throw CompressionError.imageDataFailed
         }
-
-        return try Self.lubanCompress(type: type, image: image)
+        
+        let result:Result<Data, Error> = autoreleasepool {
+            do {
+                let compressData = try self.lubanCompress(type: type, image: image)
+                return .success(compressData)
+            } catch {
+                return .failure(error)
+            }
+        }
+        
+        switch result {
+        case .success(let data):
+            return data
+        case .failure(let error):
+            throw error
+        }
     }
-
+    
     /// 图片压缩
     /// - Parameters:
     /// - type: 编码类型： 1：webp，其他：jpg
@@ -76,9 +90,9 @@ extension UIImage {
         let longSide = max(fixelW, fixelH)
         let shortSide = min(fixelW, fixelH)
         let scale = (shortSide/longSide);
-
+        
         if (scale <= 1 && scale > 0.5625) {
-
+            
             if (longSide < 1664) {
                 if (imageData.count / 1024 < 150) {
                     return imageData;
@@ -107,9 +121,9 @@ extension UIImage {
             }
         }
         else if (scale <= 0.5625 && scale > 0.5) {
-
+            
             if (fixelH < 1280 && imageData.count/1024 < 200) {
-
+                
                 return imageData;
             }
             let multiple = longSide / 1280 == 0 ? 1 : longSide / 1280;
@@ -126,9 +140,9 @@ extension UIImage {
             dataSize = dataSize < 100 ? 100 : dataSize;
         }
 
-        return try UIImage.compress(type: type, image: image, width: thumbW, height: thumbH, dataSize: dataSize)
+        return try UIImage.compress(type: type, imageData: imageData, width: thumbW, height: thumbH, dataSize: dataSize)
     }
-
+    
     /// 执行压缩（固定压缩质量）
     /// - Parameters:
     ///   - image: 图片
@@ -136,16 +150,7 @@ extension UIImage {
     ///   - height: 高度
     ///   - size: 内存大小
     /// - Returns: 压缩后的数据
-    private static func compress(type: Int, image: UIImage, width: CGFloat, height: CGFloat, dataSize: CGFloat) throws -> Data {
-        guard let tempImage = image.fixOrientation() else {
-            print("image fix orientation failed")
-            throw CompressionError.orientationFixFailed
-        }
-        
-        guard let imageData = compressEncode(type: type, image: image, quality: 1) else {
-            throw CompressionError.compressEncodeFailed
-        }
-
+    private static func compress(type: Int, imageData: Data, width: CGFloat, height: CGFloat, dataSize: CGFloat) throws -> Data {
         guard let thumbImage = UIImage.resizeImgData(imageData as CFData, width: width, height: height) else {
             print("image resize failed")
             throw CompressionError.resizeFailed
@@ -229,7 +234,7 @@ extension UIImage {
             print("UIImage compressImageData error. compression must be between 0.0 and 1.0")
             return nil
         }
-
+        
         return autoreleasepool {
             guard let imageSource = CGImageSourceCreateWithData(rawData as CFData, [kCGImageSourceShouldCache: false] as CFDictionary),
                   let writeData = CFDataCreateMutable(nil, 0),
@@ -238,9 +243,9 @@ extension UIImage {
                 print("UIImage compressImageData failed to create image source or destination")
                 return nil
             }
-
+            
             print("UIImage compressImageData rawData = \(rawData.count) compression = \(compression) imageType = \(imageType)")
-
+            
             let frameProperties = [kCGImageDestinationLossyCompressionQuality: compression] as CFDictionary
             CGImageDestinationAddImageFromSource(imageDestination, imageSource, 0, frameProperties)
             guard CGImageDestinationFinalize(imageDestination) else {
@@ -250,8 +255,8 @@ extension UIImage {
             return writeData as Data
         }
     }
-
-
+    
+    
     /// 压缩图片（动态计算压缩质量）
     /// - Parameters:
     ///   - type: 类型
@@ -259,28 +264,28 @@ extension UIImage {
     ///   - dataSize: 图片大小
     /// - Returns: 压缩结果
     private static func compressMoreQuality(type: Int, image: UIImage, dataSize:CGFloat) -> Data? {
-
+        
         var thumbImage = image
-
+        
         var qualityCompress: CGFloat = 1.0;
         var loopCount = 0
         var startTs = Date().timeIntervalSince1970
         if var imageData = compressEncode(type: type, image: thumbImage, quality: qualityCompress) {
-
+            
             print("loop entry duration = \(Date().timeIntervalSince1970 - startTs)")
             var length: CGFloat = CGFloat(imageData.count)
-
+            
             startTs = Date().timeIntervalSince1970
-
+            
             while (length / 1024 > dataSize && qualityCompress >= 0.06) {
-
+                
                 let ratio =  length / 1024 / dataSize
                 if ratio > 2 && qualityCompress / 2 > 0.06 {
                     qualityCompress /= 2
                 } else {
                     qualityCompress -= 0.06
                 }
-
+                
                 autoreleasepool {
                     if let data = compressEncode(type: type, image: thumbImage, quality: qualityCompress), let image = UIImage(data: imageData) {
                         print("\(loopCount) time loop duration = \(Date().timeIntervalSince1970 - startTs)")
@@ -292,14 +297,14 @@ extension UIImage {
                 }
                 loopCount += 1
             }
-
+            
             print("loopCount = \(loopCount)")
             return imageData
         }
         return nil
     }
-
-
+    
+    
     /// 递归压缩图片质量
     /// - Parameters:
     ///   - type: 压缩类型
@@ -309,31 +314,31 @@ extension UIImage {
     ///   - expectedSize: 期望大小
     /// - Returns: 压缩结果
     private static func qualityCompress(type: Int, data: Data?, image: UIImage?, expectedSize:CGFloat) -> Data? {
-
+        
         guard let data = data, let image = image else {
             return nil
         }
-
+        
         let currentSize = CGFloat(data.count) / 1024
-
+        
         if currentSize < expectedSize {
             return data
         }
-
+        
         var quality: CGFloat = 1
         if currentSize / expectedSize >= 2 {
             quality = 0.5
         } else {
             quality = 1 - 0.06
         }
-
+        
         if let compress = compressEncode(type: type, image: image, quality: quality), let image = UIImage(data: compress) {
             return qualityCompress(type: type, data: compress, image: image, expectedSize: expectedSize)
         } else {
             return data
         }
     }
-
+    
     /// 根据指定编码压缩图片质量
     /// - Parameters:
     ///   - type: 编码类型： 1：webp，其他：jpg
@@ -346,23 +351,23 @@ extension UIImage {
         let startDate = Date()
         autoreleasepool {
 //            if type == 1 {
-                print("compress onece-1:\(quality)")
-                data = YYImageEncoder.encode(image, type:.JPEG, quality:quality)
+//                print("compress onece-1:\(quality)")
+//                data = YYImageEncoder.encode(image, type:.JPEG, quality:quality)
 //            } else {
-//                print("compress onece-2:\(quality)")
-//                data = image.jpegData(compressionQuality: quality)
-//            }
-//            if data == nil {
-//                print("compress onece-3:\(quality)")
-//                data = image.compressionAllType(with: quality)
-//            }
+            print("compress onece-2:\(quality)")
+            data = image.jpegData(compressionQuality: quality)
+            //        }
+            if data == nil {
+                print("compress onece-3:\(quality)")
+                data = image.compressionAllType(with: quality)
+            }
         }
-        print("compress onece-1 result[\(Date().timeIntervalSince(startDate))]:\(data?.count)")
+        print("compress onece result[\(Date().timeIntervalSince(startDate))]:\(data?.count)")
         return data
     }
-
+    
     var cgImageOrientation: CGImagePropertyOrientation { .init(imageOrientation) }
-
+    
     /// ImageIO
     public func compressionAllType(with compressionQuality: CGFloat = 1) -> Data? {
          guard
@@ -373,9 +378,9 @@ extension UIImage {
          CGImageDestinationAddImage(destination, cgImage, [kCGImageDestinationLossyCompressionQuality: compressionQuality, kCGImagePropertyOrientation: cgImageOrientation.rawValue] as CFDictionary)
          guard CGImageDestinationFinalize(destination) else { return nil }
         print("create finalsize")
-         return mutableData as Data
-     }
-
+        return mutableData as Data
+    }
+    
     /// 重置图片大小 使用 ImageIO 性能更好， 降低内存峰值 ， 上传大小降低 7 倍
     /// [I] oss>>> image compress before size = 2092 Kb
     /// [I] oss>>> image compress after size = 327 Kb
@@ -391,7 +396,7 @@ extension UIImage {
         var sec = Date().timeIntervalSince(startDate)
         startDate = Date()
         print("start resize--2： image-->Data[\(sec)]")
-
+        
         if data == nil {
             data = image.compressionAllType()
         }
@@ -416,11 +421,11 @@ extension UIImage {
         // 创建缩略图
         guard let thumbnail = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) else { return nil }
         print("finish imagesource")
-
+        
         return UIImage(cgImage: thumbnail)
     }
     
-    /// 适配图片方向
+    /// 适配图片方向 -- 该方法暂时不用，鲁班压缩过程中不需要修改图片方向
     /// - Returns: 适配后的图片
     @objc
     public func fixOrientation() -> UIImage? {
@@ -428,53 +433,53 @@ extension UIImage {
         if (self.imageOrientation == .up) {
             return self
         }
-
+        
         // We need to calculate the proper transformation to make the image upright.
         // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
         var transform: CGAffineTransform = .identity;
-
+        
         switch (self.imageOrientation) {
         case .down, .downMirrored:
             transform = transform.translatedBy(x: self.size.width, y: self.size.height);
             transform = transform.rotated(by: Double.pi);
-
+            
         case .left, .leftMirrored:
             transform = transform.translatedBy(x: self.size.width, y: 0);
             transform = transform.rotated(by: Double.pi / 2);
-
+            
         case .right, .rightMirrored:
             transform = transform.translatedBy(x: 0, y: self.size.height);
             transform = transform.rotated(by: -(Double.pi / 2));
         default:
             break
         }
-
+        
         switch (self.imageOrientation) {
         case .upMirrored, .downMirrored:
             transform = transform.translatedBy(x: self.size.width, y: 0);
             transform = transform.scaledBy(x: -1, y: 1);
-
+            
         case .leftMirrored, .rightMirrored:
             transform = transform.translatedBy(x: self.size.height, y: 0);
             transform = transform.scaledBy(x: -1, y: 1);
         default: break
         }
-
+        
         // Now we draw the underlying CGImage into a new context, applying the transform
         // calculated above.
         guard let imageRef = self.cgImage, let space = imageRef.colorSpace, let context = CGContext(data: nil, width: Int(self.size.width), height: Int(self.size.height), bitsPerComponent: imageRef.bitsPerComponent, bytesPerRow: 0, space: space, bitmapInfo: imageRef.bitmapInfo.rawValue) else {
             return nil
         }
-
+        
         context.concatenate(transform)
         switch (self.imageOrientation) {
         case .left, .leftMirrored, .right, .rightMirrored:
             context.draw(imageRef, in: CGRect(x: 0, y: 0, width: self.size.height, height: self.size.width))
-
+            
         default:
             context.draw(imageRef, in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
         }
-
+        
         // And now we just create a new UIImage from the drawing context
         guard let cgimg = context.makeImage() else {
             return nil
@@ -482,20 +487,20 @@ extension UIImage {
         let img = UIImage(cgImage: cgimg)
         return img
     }
-
+    
 }
 
 extension CGImagePropertyOrientation {
     init(_ uiOrientation: UIImage.Orientation) {
         switch uiOrientation {
-            case .up: self = .up
-            case .upMirrored: self = .upMirrored
-            case .down: self = .down
-            case .downMirrored: self = .downMirrored
-            case .left: self = .left
-            case .leftMirrored: self = .leftMirrored
-            case .right: self = .right
-            case .rightMirrored: self = .rightMirrored
+        case .up: self = .up
+        case .upMirrored: self = .upMirrored
+        case .down: self = .down
+        case .downMirrored: self = .downMirrored
+        case .left: self = .left
+        case .leftMirrored: self = .leftMirrored
+        case .right: self = .right
+        case .rightMirrored: self = .rightMirrored
         @unknown default:
             fatalError()
         }
