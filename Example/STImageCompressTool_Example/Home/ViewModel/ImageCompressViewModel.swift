@@ -141,9 +141,9 @@ class ImageCompressViewModel: ImageCompressViewModelType {
                 var compressedData: Data?
                 print("compress image:\(item.imageType.rawValue)")
                 if item.imageType == .gif {
-                    compressedData = UIImage.compressGIFData(with: orignalData, limitDataSize: 1024 * 1024 * 5)
+                    compressedData = HTImageCompression.compressGIFData(with: orignalData, limitDataSize: 1024 * 1024 * 10)
                 } else {
-                    compressedData = try? UIImage.lubanCompress(imageData: orignalData)
+                    compressedData = try? HTImageCompression.lubanCompress(imageData: orignalData)
                     
                 }
                 print("compress image finish:\(item.imageType.rawValue)\t[\(compressedData?.count ?? 0)]")
