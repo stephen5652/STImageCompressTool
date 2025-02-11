@@ -1,36 +1,36 @@
 Pod::Spec.new do |spec|
 
-  spec.name         = "STPreivewModule"
+  spec.name         = "STAlbumModule"
   spec.version      = "0.0.1"
-  spec.summary      = "STPreivewModule 说明."
+  spec.summary      = "STAlbumModule 说明."
   spec.description      = <<-DESC
-  STPreivewModule long description of the pod here.
+  STAlbumModule long description of the pod here.
   DESC
 
-  spec.homepage         = 'http://github.com/stephenchen/STPreivewModule'
-  spec.license      = { :type => "MIT", :file => "LICENSE" }
-  spec.author             = { "stephenchen" => "stephen.chen@hellotalk.cn" }
+  spec.homepage         = 'http://github.com/StephenChen/STAlbumModule'
+  spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  spec.author             = { "StephenChen" => "stephen.chen@hellotalk.cn" }
   spec.ios.deployment_target = '13.0'
 
-  spec.source       = { :git => "http://github/stephenchen/STPreivewModule.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "http://github/StephenChen/STAlbumModule.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  spec.source_files = 'STPreivewModule/{Public,Private}/**/*.{h,m,mm,c,cpp,swift}'
-  # spec.exclude_files = "STPreivewModule/Exclude" #排除文件
+  spec.source_files = 'STAlbumModule/{Public,Private}/**/*.{h,m,mm,c,cpp,swift}'
+  # spec.exclude_files = "STAlbumModule/Exclude" #排除文件
 
-  spec.project_header_files = 'STPreivewModule/Private/**/*.{h}'
-  spec.public_header_files = 'STPreivewModule/Public/**/*.h' #此处放置组件的对外暴漏的头文件
+  spec.project_header_files = 'STAlbumModule/Private/**/*.{h}'
+  spec.public_header_files = 'STAlbumModule/Public/**/*.h' #此处放置组件的对外暴漏的头文件
 
   # ――― binary framework/lib ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #spec.vendored_frameworks = 'STPreivewModule/Private/**/*.framework'
-  #spec.vendored_libraries = 'STPreivewModule/Private/**/*.a'
+  #spec.vendored_frameworks = 'STAlbumModule/Private/**/*.framework'
+  #spec.vendored_libraries = 'STAlbumModule/Private/**/*.a'
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   # 放置 json,font,jpg,png等资源
-  #  spec.resources = ["STPreivewModule/{Public,Private}/**/*.{xib}"]
+  #  spec.resources = ["STAlbumModule/{Public,Private}/**/*.{xib}"]
   #  spec.resource_bundles = {
-  #    'STPreivewModule' => ['STPreivewModule/Assets/*.xcassets', "STPreivewModule/{Public,Private}/**/*.{png,jpg,font,json}"]
+  #    'STAlbumModule' => ['STAlbumModule/Assets/*.xcassets', "STAlbumModule/{Public,Private}/**/*.{png,jpg,font,json}"]
   #  }
 
 
@@ -58,6 +58,7 @@ Pod::Spec.new do |spec|
 #       ss.vendored_frameworks = 'YKHawkeye/Framework/*.framework'
 #     end
 
-spec.dependency "STAllBase"
-spec.dependency "STBaseModel"
+spec.dependency "STComponentTools/STRouter"
+spec.dependency "STModuleService.swift"  #swift 服务中间件
+spec.dependency 'STAllBase'
 end

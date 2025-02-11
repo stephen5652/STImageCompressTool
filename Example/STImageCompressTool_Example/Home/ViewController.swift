@@ -13,6 +13,7 @@ import RxCocoa
 import SnapKit
 import Photos
 import STBaseModel
+import STAllBase
 
 class ViewController: UIViewController, UITableViewDelegate {
     
@@ -35,7 +36,7 @@ class ViewController: UIViewController, UITableViewDelegate {
         button.setTitle("清空", for: .normal)
         return button
     }()
-
+    
     private let viewModel: ImageCompressViewModelType = ImageCompressViewModel()
     private let disposeBag = DisposeBag()
     
@@ -57,6 +58,13 @@ class ViewController: UIViewController, UITableViewDelegate {
         
         view.addSubview(tableView)
         
+        let btn = UIButton(type: .custom)
+        btn.setTitle("相册预览", for: .normal)
+        btn.setTitleColor(.systemBlue, for: .normal)
+        btn.addTarget(self, action: #selector(openAlbumVC(_ :)), for: .touchUpInside)
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: btn)
+        
         tableView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.left.right.equalToSuperview()
@@ -76,6 +84,16 @@ class ViewController: UIViewController, UITableViewDelegate {
         clearButton.snp.makeConstraints { make in
             make.width.equalTo(addButton)
         }
+    }
+    
+    @objc
+    private func openAlbumVC(_ sender: UIButton) {
+        let req = STRouterUrlRequest.instance { builder in
+            builder.urlToOpen = STRouterDefine.kRouter_Album
+            builder.fromVC = self
+        }
+        
+        stRouterOpenUrlRequest(req) { _ in }
     }
     
     private func bindViewModel() {

@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
   spec.homepage         = 'http://github.com/stephenchen/STRoutServiceDefine'
   spec.license      = { :type => "MIT", :file => "LICENSE" }
   spec.author             = { "stephenchen" => "stephen.chen@hellotalk.cn" }
-  spec.ios.deployment_target = '9.0'
+  spec.ios.deployment_target = '13.0'
 
   spec.source       = { :git => "http://github/stephenchen/STRoutServiceDefine.git", :tag => "#{spec.version}" }
 

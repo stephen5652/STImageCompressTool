@@ -30,12 +30,32 @@ public class HTImageCompression {
     /// - type: 编码类型： 1：webp，其他：jpg
     /// - imageData: 目标图片数据
     /// - Returns: 压缩结果
-    public static func lubanCompress(type: Int = 0, imageData: Data) throws -> Data {
-        guard let image = UIImage(data: imageData) else {
-            throw CompressionError.imageDataFailed
+    public static func lubanCompress(type: Int = 0, imageData: Data, orignalSize: CGSize? = nil) throws -> Data {
+        let result: Result<Data,Error> = autoreleasepool {
+            
+            var sizeOri: CGSize!
+            if let orignalSize {
+                sizeOri = orignalSize
+            } else {
+                guard let image = UIImage(data: imageData) else {
+                    return .failure(CompressionError.imageDataFailed)
+                }
+                sizeOri = image.size
+            }
+            
+            do {
+                return .success(try lubanCompressExec(type: type, imageData: imageData, orignalSize: sizeOri))
+            } catch {
+                return .failure(error)
+            }
         }
         
-        return try lubanCompress(type: type, image: image)
+        switch result {
+        case .success(let data):
+            return data
+        case .failure(let err):
+            throw err
+        }
     }
     
     /// 图片压缩
@@ -44,9 +64,13 @@ public class HTImageCompression {
     /// - image: 目标图片
     /// - Returns: 压缩结果
     public static func lubanCompress(type: Int = 0, image: UIImage) throws -> Data {
+         guard let imageData = compressEncode(type: type, image: image, quality: 1) else {
+            throw CompressionError.compressEncodeFailed
+        }
+        
         let result:Result<Data, Error> = autoreleasepool {
             do {
-                let compressData = try lubanCompressExec(type: type, image: image)
+                let compressData = try lubanCompressExec(type: type, imageData: imageData, orignalSize: image.size)
                 return .success(compressData)
             } catch {
                 return .failure(error)
@@ -65,19 +89,14 @@ public class HTImageCompression {
 // MARK: - Luban compression
 private extension HTImageCompression {
     /// 鲁班压缩
-    static func lubanCompressExec(type: Int = 0, image: UIImage) throws -> Data {
+    static func lubanCompressExec(type: Int = 0, imageData: Data, orignalSize: CGSize) throws -> Data {
         /**
-         1. 将图片转换为 Data， 获得图片在内存中的大小
-         2. 按照鲁班算法，计算图片压缩后的尺寸
-         3. 压缩图片
+         1. 按照鲁班算法，计算图片压缩后的尺寸
+         2. 压缩图片
          */
 
-        guard let imageData = compressEncode(type: type, image: image, quality: 1) else {
-            throw CompressionError.compressEncodeFailed
-        }
-
-        let fixelW = image.size.width;
-        let fixelH = image.size.height;
+        let fixelW = orignalSize.width;
+        let fixelH = orignalSize.height;
 
         var dataSize: CGFloat = 0
 
@@ -249,8 +268,13 @@ private extension HTImageCompression {
                 return .failure(CompressionError.imageDataFailed)
             }
             
+            var startDate = Date()
             let sampleCount = fitSampleCount(data: resultData)
+            print(#function, "fit sampleCount: \(sampleCount), time: \(Date().timeIntervalSince(startDate))s")
+            
+            startDate = Date()
             if let data = compressImageData(resultData, sampleCount: sampleCount){
+                print(#function, "compress gifImageDate:\(Date().timeIntervalSince(startDate))s")
                 resultData = data
             } else {
                 return .failure(CompressionError.compressFailed)
@@ -262,12 +286,18 @@ private extension HTImageCompression {
             let imageSize = imageSize(data: resultData)
             var longSideWidth = max(imageSize.height, imageSize.width)
             // 图片尺寸按比率缩小，比率按字节比例逼近
+            var compreTime = 0
             while resultData.count > limitDataSize{
+                startDate = Date()
+                compreTime += 1
+                print("Gif compress time start: \(compreTime)")
                 let ratio = sqrt(CGFloat(limitDataSize) / CGFloat(resultData.count))
                 longSideWidth *= ratio
                 if let data = compressImageData(resultData, limitLongWidth: longSideWidth) {
                     resultData = data
+                    print("Gif compress time finish[\(Date().timeIntervalSince(startDate))]: \(compreTime)")
                 } else {
+                    print("Gif compress time failed[\(Date().timeIntervalSince(startDate))]: \(compreTime)")
                     return .failure(CompressionError.compressFailed)
                 }
             }
@@ -295,15 +325,19 @@ private extension HTImageCompression {
             return nil
         }
         
+        var startDate = Date()
         // 计算帧的间隔
         let frameDurations = frameDurations(imageSource: imageSource)
+        print("compressImageData get frame durations cost: \(Date().timeIntervalSince(startDate))s")
         
+        startDate = Date()
         // 合并帧的时间,最长不可高于 200ms
         let mergeFrameDurations = (0..<frameDurations.count).filter{ $0 % sampleCount == 0 }.map{ min(frameDurations[$0..<min($0 + sampleCount, frameDurations.count)].reduce(0.0) { $0 + $1 }, 0.2) }
         
         // 抽取帧 每 n 帧使用 1 帧
         let sampleImageFrames = (0..<frameDurations.count).filter{ $0 % sampleCount == 0 }.compactMap{ CGImageSourceCreateImageAtIndex(imageSource, $0, nil) }
         
+        print("compressImageData merge frames cost: \(Date().timeIntervalSince(startDate))s")
         guard let imageDestination = CGImageDestinationCreateWithData(writeData, imageType, sampleImageFrames.count, nil) else{
             return nil
         }
@@ -324,6 +358,7 @@ private extension HTImageCompression {
         
         // 使用 autoreleasepool 减少内存占用
         autoreleasepool {
+            startDate = Date()
             zip(sampleImageFrames, mergeFrameDurations).forEach { frame, duration in
                 let frameProperties = [kCGImagePropertyGIFDictionary: [
                     kCGImagePropertyGIFDelayTime: duration,
@@ -334,11 +369,14 @@ private extension HTImageCompression {
                 
                 CGImageDestinationAddImage(imageDestination, frame, frameProperties)
             }
+            print("prepared \(sampleImageFrames.count) frames cost: \(Date().timeIntervalSince(startDate))s")
         }
         
+        startDate = Date()
         guard CGImageDestinationFinalize(imageDestination) else {
             return nil
         }
+        print("done compressImageData cost: \(Date().timeIntervalSince(startDate))s")
         
         return writeData as Data
     }

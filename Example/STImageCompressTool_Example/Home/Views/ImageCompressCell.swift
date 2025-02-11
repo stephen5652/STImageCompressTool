@@ -133,7 +133,7 @@ class ImageCompressCell: UITableViewCell {
         output.originalImage
             .drive(onNext: { [weak self] (url) in
                 guard let self = self, let url else { return }
-                originalImageView.kfSetImage(localPath: url.path)
+//                originalImageView.kfSetImage(localPath: url.path)
             })
             .disposed(by: disposeBag)
         

@@ -7,6 +7,10 @@
 
 import UIKit
 
+import STRxInOutPutProtocol
+
+public typealias STBaseVCMvvm = STBaseVC & STMvvmProtocol
+
 public class STBaseNavVC: CYLBaseNavigationController {
     public override func viewDidLoad() {
         super.viewDidLoad()

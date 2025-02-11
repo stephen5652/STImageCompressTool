@@ -124,8 +124,8 @@ class ImageCompressCellViewModel {
         
         let request = STRouterUrlRequest.instance { builder in
             builder.urlToOpen = STRouterDefine.kRouter_PreviewImage
-            builder.parameter[STRouterDefine.kRouterKey_Item] = self.item
-            builder.parameter[STRouterDefine.kRouterKey_Url] = url
+            builder.parameter[STRouterDefine.kRouterPara_Item] = self.item
+            builder.parameter[STRouterDefine.kRouterPara_Url] = url
         }
         STRouter.shareInstance().stOpenUrl(request)
     }
@@ -137,8 +137,8 @@ class ImageCompressCellViewModel {
         
         let request = STRouterUrlRequest.instance { builder in
             builder.urlToOpen = STRouterDefine.kRouter_PreviewImage
-            builder.parameter[STRouterDefine.kRouterKey_Item] = self.item
-            builder.parameter[STRouterDefine.kRouterKey_Url] = url
+            builder.parameter[STRouterDefine.kRouterPara_Item] = self.item
+            builder.parameter[STRouterDefine.kRouterPara_Url] = url
         }
         STRouter.shareInstance().stOpenUrl(request)
     }

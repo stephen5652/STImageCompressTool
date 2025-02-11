@@ -60,6 +60,10 @@ PODS:
     - RxSwift (= 6.5.0)
   - RxSwift (6.5.0)
   - SnapKit (4.2.0)
+  - STAlbumModule (0.0.1):
+    - STAllBase
+    - STComponentTools/STRouter
+    - STModuleService.swift
   - STAllBase (0.0.1):
     - CYLTabBarController
     - Kingfisher
@@ -74,6 +78,7 @@ PODS:
     - STImageCompressTool
     - STModuleService.swift
     - STRoutServiceDefine
+    - STRxInOutPutProtocol
   - STAnnotation (0.0.1)
   - STBaseModel (0.0.1)
   - STComponentTools (0.0.5):
@@ -92,6 +97,8 @@ PODS:
     - STAllBase
     - STBaseModel
   - STRoutServiceDefine (0.0.1)
+  - STRxInOutPutProtocol (0.0.1):
+    - RxSwift
   - Toast (4.1.1)
   - YYKit (1.0.9):
     - YYKit/no-arc (= 1.0.9)
@@ -107,6 +114,7 @@ DEPENDENCIES:
   - RxRelay (~> 6.5.0)
   - RxSwift (~> 6.5.0)
   - SnapKit
+  - STAlbumModule (from `../Components/STAlbumModule`)
   - STAllBase (from `../Components/STAllBase`)
   - STAnnotation (from `https://github.com/stephen5652/STAnnotation.git`)
   - STBaseModel (from `../Components/STBaseModel`)
@@ -115,6 +123,7 @@ DEPENDENCIES:
   - STModuleService.swift (from `https://github.com/STTechnology5652/STModuleService.swift.git`)
   - STPreivewModule (from `../Components/STPreivewModule`)
   - STRoutServiceDefine (from `../Components/STRoutServiceDefine`)
+  - STRxInOutPutProtocol (from `https://github.com/STTechnology5652/STRxInOutPutProtocol.git`, tag `0.0.1`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -134,6 +143,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   MTCategoryComponent:
     :git: https://github.com/STTechnology5652/MTCategoryComponent.git
+  STAlbumModule:
+    :path: "../Components/STAlbumModule"
   STAllBase:
     :path: "../Components/STAllBase"
   STAnnotation:
@@ -151,6 +162,9 @@ EXTERNAL SOURCES:
     :path: "../Components/STPreivewModule"
   STRoutServiceDefine:
     :path: "../Components/STRoutServiceDefine"
+  STRxInOutPutProtocol:
+    :git: https://github.com/STTechnology5652/STRxInOutPutProtocol.git
+    :tag: 0.0.1
 
 CHECKOUT OPTIONS:
   MTCategoryComponent:
@@ -165,6 +179,9 @@ CHECKOUT OPTIONS:
   STModuleService.swift:
     :commit: fa478f156073d50ca0b5f86dccb0e8748d6f128a
     :git: https://github.com/STTechnology5652/STModuleService.swift.git
+  STRxInOutPutProtocol:
+    :git: https://github.com/STTechnology5652/STRxInOutPutProtocol.git
+    :tag: 0.0.1
 
 SPEC CHECKSUMS:
   CYLTabBarController: e7440ad0992edfb8ac14a6c793f43aa636c5cba5
@@ -178,17 +195,19 @@ SPEC CHECKSUMS:
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  STAllBase: 93c4f6be67594c40ba8b3dd416bd8d8596c1a417
+  STAlbumModule: 0d8bec74c8f39f65e74075bda1feb60189da118c
+  STAllBase: bc2096b25f47abd5d5115b296556fbbb4e7bc553
   STAnnotation: 6a643e7da657f4e9176f2cce2df4d1d1f7697a91
-  STBaseModel: a17bcb324eba036ae93e1d7b636f4c48e11ae375
+  STBaseModel: 70f3237a0556a05f1e5bd5e8fe471af583f0090f
   STComponentTools: ca1aa401d7b8a47a99cd0ce8c85ad81499fa1409
-  STImageCompressTool: 9fc2453c2fb2d18c46aa237ba75f816897a96084
+  STImageCompressTool: c23a1737b76bd08154edadff932eee395dfd1582
   STModuleService.swift: 2d12d375ea036657258959ee90db9789555dcd40
-  STPreivewModule: 621c1e5a838ffcb35025151ae5ceebb18a455d8a
-  STRoutServiceDefine: f6173168c1d74af095d0ee9a471096f261ca64a6
+  STPreivewModule: 0a439f38c7f8c2b1977d930029ab01c7d2f335a2
+  STRoutServiceDefine: efab74c12edb3c7b196d9273091507629b47bfce
+  STRxInOutPutProtocol: 503e63f24b3d1678badf57a9ba72de4e5e0f01c6
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: 3360626041c181ae34ed1d1315582317c7708e7f
+PODFILE CHECKSUM: d8e49f8221ba6118fc89f007704006dc942e3555
 
 COCOAPODS: 1.14.3

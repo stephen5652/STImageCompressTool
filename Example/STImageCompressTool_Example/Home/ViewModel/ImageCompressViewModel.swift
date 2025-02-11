@@ -144,7 +144,6 @@ class ImageCompressViewModel: ImageCompressViewModelType {
                     compressedData = HTImageCompression.compressGIFData(with: orignalData, limitDataSize: 1024 * 1024 * 10)
                 } else {
                     compressedData = try? HTImageCompression.lubanCompress(imageData: orignalData)
-                    
                 }
                 print("compress image finish:\(item.imageType.rawValue)\t[\(compressedData?.count ?? 0)]")
 

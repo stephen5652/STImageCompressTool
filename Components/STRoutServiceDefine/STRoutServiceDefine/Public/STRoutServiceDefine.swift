@@ -10,6 +10,8 @@ import Foundation
 
 public class STRouterDefine: NSObject {
     public static let kRouter_PreviewImage = "kRouter_PreviewImage"
-    public static let kRouterKey_Item = "kRouterKey_Item"
-    public static let kRouterKey_Url = "kRouterKey_Url"
+    public static let kRouter_Album = "kRouter_Album"
+
+    public static let kRouterPara_Item = "kRouterPara_Item"
+    public static let kRouterPara_Url = "kRouterPara_Url"
 }

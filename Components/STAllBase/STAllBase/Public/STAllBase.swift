@@ -23,4 +23,4 @@
 @_exported import SnapKit
 @_exported import CYLTabBarController
 @_exported import STImageCompressTool
-
+@_exported import STRxInOutPutProtocol

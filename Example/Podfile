@@ -12,6 +12,9 @@ inhibit_all_warnings!
 use_frameworks! :linkage => :static # 使用 framework形势的静态库， 注释可变为.a 静态库
 use_modular_headers! #此字段用于pod自动生成 swift module 伞文件
 
+install! 'cocoapods',
+generate_multiple_pod_projects: true
+
 def st_installLocalPods(dir, arr)
   arr.each do |onePod|
   pod  onePod, :path => File.join(dir, onePod)
@@ -33,6 +36,7 @@ def pod_components
   'STPreivewModule',
   'STAllBase',
   'STBaseModel',
+  'STAlbumModule',
   ]
    st_installLocalPods(dir, arr)
 end
@@ -55,11 +59,11 @@ target 'STImageCompressTool_Example' do
   pod 'STAnnotation', :git => "https://github.com/stephen5652/STAnnotation.git"
   pod 'STComponentTools', :git => "https://github.com/STTechnology5652/STComponentTools.git", :tag => '0.0.5'
   pod 'STModuleService.swift', :git => "https://github.com/STTechnology5652/STModuleService.swift.git"
+  pod 'STRxInOutPutProtocol', :git => "https://github.com/STTechnology5652/STRxInOutPutProtocol.git", :tag => "0.0.1"
 
   # UI
   pod 'SnapKit'
   pod 'CYLTabBarController', '~> 1.24.0'
-  
   
   # UI 调试
   pod 'LookinServer', :subspecs => ['Swift'], :configurations => ['Debug', 'Release']

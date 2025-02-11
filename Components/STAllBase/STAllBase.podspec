@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
   spec.homepage         = 'http://github.com/stephenchen/STAllBase'
   spec.license      = { :type => "MIT", :file => "LICENSE" }
   spec.author             = { "stephenchen" => "stephen.chen@hellotalk.cn" }
-  spec.ios.deployment_target = '9.0'
+  spec.ios.deployment_target = '13.0'
 
   spec.source       = { :git => "http://github/stephenchen/STAllBase.git", :tag => "#{spec.version}" }
 
@@ -66,6 +66,7 @@ Pod::Spec.new do |spec|
   spec.dependency 'SnapKit'
   spec.dependency 'CYLTabBarController'
   spec.dependency 'STImageCompressTool'
+  spec.dependency 'STRxInOutPutProtocol'
 
 #   spec.subspec 'WithLoad' do |ss|
 #       ss.source_files = 'YKHawkeye/Src/MethodUseTime/**/*{.h,.m}'

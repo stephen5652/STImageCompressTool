@@ -17,8 +17,8 @@ private class STPreivewModuleRegisterRouter: NSObject, STRouterRegisterProtocol 
                 return
             }
             
-            guard let url = req.parameter[STRouterDefine.kRouterKey_Url] as? URL,
-                  let item = req.parameter[STRouterDefine.kRouterKey_Item] as? ImageItem else {
+            guard let url = req.parameter[STRouterDefine.kRouterPara_Url] as? URL,
+                  let item = req.parameter[STRouterDefine.kRouterPara_Item] as? ImageItem else {
                 print("open Preview VC paramater error")
                 return
             }

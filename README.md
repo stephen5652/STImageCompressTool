@@ -14,6 +14,15 @@ STImageCompressTool 组件主要用于：
 
 ## 用法
 
+### 必需配置
+
+在项目的 Info.plist 中添加以下权限描述：
+
+```xml
+<key>NSPhotoLibraryUsageDescription</key>
+<string>需要访问相册以选择需要压缩的图片</string>
+```
+
 ### 集成
 
 pod 'STImageCompressTool', '~> x.x.x'
