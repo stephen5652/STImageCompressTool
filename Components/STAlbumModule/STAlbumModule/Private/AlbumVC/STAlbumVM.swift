@@ -37,18 +37,30 @@ class STAlbumVM: STViewModelProtocol {
     }
     
     struct OutPut {
-        let albums: Observable<[AlbumModel]>
+        let photos: Observable<[PhotoInfo]>
         let selectedAlbum: Observable<AlbumModel>
         let error: Observable<Error>
         let currentAlbumType: Observable<AlbumType>
     }
     
-    private let albumsRelay = BehaviorRelay<[AlbumModel]>(value: [])
+    private let photosRelay = BehaviorRelay<[PhotoInfo]>(value: [])
     private let errorRelay = PublishRelay<Error>()
     private var currentPage = 0
-    private let pageSize = 20
+    private let pageSize: Int = {
+        // 增加每页数量，减少加载次数
+        let screenHeight = UIScreen.main.bounds.height
+        let spacing: CGFloat = 1
+        let itemWidth = (UIScreen.main.bounds.width - spacing * 5) / 4
+        let rowCount = Int(screenHeight / (itemWidth + spacing))
+        // 每页加载3屏的数据
+        return rowCount * 4 * 3
+    }()
     private var isLoading = false
     private var hasMoreData = true
+    
+    // 添加预加载标志
+    private var isPreloading = false
+    private let preloadThreshold = 0.7  // 当显示70%的内容时开始预加载
     
     func transformInput(_ input: Input) -> OutPut {
         // 处理相册类型选择
@@ -67,69 +79,83 @@ class STAlbumVM: STViewModelProtocol {
                 self?.currentPage = 0
                 self?.hasMoreData = true
             })
-            .flatMapLatest { [weak self] collection -> Observable<[AlbumModel]> in
+            .flatMapLatest { [weak self] collection -> Observable<[PhotoInfo]> in
                 guard let self = self else { return .empty() }
-                return self.fetchPhotosFromCollection(collection)
+                return STAlbumService.shared.fetchPhotos(from: collection, page: self.currentPage, pageSize: self.pageSize)
                     .catch { error in
                         self.errorRelay.accept(error)
                         return .just([])
                     }
             }
-            .bind(to: albumsRelay)
+            .bind(to: photosRelay)
             .disposed(by: disposeBag)
         
         // 修改 viewWillAppear 处理，加载默认相册
         input.viewWillAppear
-            .flatMapLatest { [weak self] _ -> Observable<[AlbumModel]> in
+            .flatMapLatest { [weak self] _ -> Observable<[PhotoInfo]> in
                 guard let self = self, let collection = self.selectedCollection else { return .empty() }
                 return STAlbumService.shared.fetchPhotos(from: collection, page: self.currentPage, pageSize: self.pageSize)
-                    .map { photos in
-                        return photos.map { photo in
-                            return AlbumModel(
-                                id: photo.asset.localIdentifier,
-                                name: "",
-                                count: 0,
-                                thumbnail: photo.thumbnail
-                            )
-                        }
-                    }
                     .catch { error in
                         self.errorRelay.accept(error)
                         return .just([])
                     }
             }
-            .bind(to: albumsRelay)
+            .bind(to: photosRelay)
             .disposed(by: disposeBag)
         
-        // 修改加载更多的处理
+        // 优化加载更多的处理
         input.loadMore
             .filter { [weak self] _ in
                 guard let self = self else { return false }
                 return !self.isLoading && self.hasMoreData
             }
-            .flatMapLatest { [weak self] _ -> Observable<[AlbumModel]> in
+            .do(onNext: { [weak self] _ in
+                self?.isLoading = true
+            })
+            .flatMapLatest { [weak self] _ -> Observable<[PhotoInfo]> in
                 guard let self = self, let collection = self.selectedCollection else { return .empty() }
-                self.currentPage += 1
-                return self.fetchPhotosFromCollection(collection)
-                    .catch { error in
-                        self.errorRelay.accept(error)
-                        return .just([])
-                    }
+                
+                let nextPage = self.currentPage + 1
+                return STAlbumService.shared.fetchPhotos(from: collection, page: nextPage, pageSize: self.pageSize)
+                    .do(onNext: { [weak self] photos in
+                        guard let self = self else { return }
+                        if !photos.isEmpty {
+                            self.currentPage = nextPage
+                        }
+                        self.hasMoreData = !photos.isEmpty
+                        self.isLoading = false
+                    }, onError: { [weak self] _ in
+                        self?.isLoading = false
+                    })
             }
-            .withLatestFrom(albumsRelay) { newAlbums, existingAlbums in
-                return existingAlbums + newAlbums
+            .withLatestFrom(photosRelay) { (newPhotos: [PhotoInfo], existingPhotos: [PhotoInfo]) -> [PhotoInfo] in
+                // 创建新数组而不是直接修改现有数组
+                var updatedPhotos = existingPhotos
+                updatedPhotos.append(contentsOf: newPhotos)
+                return updatedPhotos
             }
-            .bind(to: albumsRelay)
+            .bind(to: photosRelay)
             .disposed(by: disposeBag)
         
         // 处理选择
         let selectedAlbum = input.itemSelected
-            .withLatestFrom(albumsRelay) { indexPath, albums in
-                return albums[indexPath.row]
+            .withLatestFrom(photosRelay) { indexPath, photos in
+                return AlbumModel(
+                    id: photos[indexPath.row].asset.localIdentifier,
+                    name: "",
+                    count: 0,
+                    thumbnail: photos[indexPath.row].thumbnail
+                )
             }
         
         return OutPut(
-            albums: albumsRelay.asObservable(),
+            photos: photosRelay.asObservable()
+                .distinctUntilChanged { prev, current in
+                    // 如果数组长度不同，说明有新数据
+                    guard prev.count == current.count else { return false }
+                    // 比较每个元素的 localIdentifier
+                    return zip(prev, current).allSatisfy { $0.asset.localIdentifier == $1.asset.localIdentifier }
+                },
             selectedAlbum: selectedAlbum,
             error: errorRelay.asObservable(),
             currentAlbumType: selectedAlbumTypeRelay.asObservable()

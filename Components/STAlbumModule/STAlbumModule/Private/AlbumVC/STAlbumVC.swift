@@ -24,13 +24,13 @@ class STAlbumVC: STBaseVCMvvm {
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        let spacing: CGFloat = 2
+        let spacing: CGFloat = 1  // 减小间距
         layout.minimumLineSpacing = spacing
         layout.minimumInteritemSpacing = spacing
         
-        // 计算每行显示3个图片的大小
-        let width = (UIScreen.main.bounds.width - spacing * 4) / 3
-        layout.itemSize = CGSize(width: width, height: width)
+        // 计算每行显示4个图片的大小
+        let itemWidth = (UIScreen.main.bounds.width - spacing * 5) / 4  // 5个间隔（两边各一个，中间3个）
+        layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
         layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -47,13 +47,13 @@ class STAlbumVC: STBaseVCMvvm {
     
     private func setupCollectionViewLayout() {
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            let spacing: CGFloat = 2
+            let spacing: CGFloat = 1  // 减小间距
             layout.minimumLineSpacing = spacing
             layout.minimumInteritemSpacing = spacing
             
-            // 计算每行显示3个图片的大小
-            let width = (UIScreen.main.bounds.width - spacing * 4) / 3
-            layout.itemSize = CGSize(width: width, height: width)
+            // 计算每行显示4个图片的大小
+            let itemWidth = (UIScreen.main.bounds.width - spacing * 5) / 4  // 5个间隔（两边各一个，中间3个）
+            layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
             layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
         }
     }
@@ -158,10 +158,11 @@ class STAlbumVC: STBaseVCMvvm {
         
         let output = vm.transformInput(input)
         
-        // 更新 cell 配置
-        output.albums
-            .bind(to: collectionView.rx.items(cellIdentifier: "AlbumCell", cellType: AlbumCell.self)) { index, model, cell in
-                cell.imageView.image = model.thumbnail
+        // 优化 CollectionView 绑定
+        output.photos
+            .observe(on: MainScheduler.instance)  // 确保在主线程更新 UI
+            .bind(to: collectionView.rx.items(cellIdentifier: "AlbumCell", cellType: AlbumCell.self)) { [weak self] index, model, cell in
+                cell.configure(with: model)
             }
             .disposed(by: vm.disposeBag)
         
@@ -176,17 +177,22 @@ class STAlbumVC: STBaseVCMvvm {
             .bind(to: selectedIndexSubject)
             .disposed(by: vm.disposeBag)
         
-        // 监听滚动到底部事件，触发加载更多
-        collectionView.rx.contentOffset
-            .map { [weak self] offset in
-                guard let self = self else { return false }
-                let contentHeight = self.collectionView.contentSize.height
-                let scrollViewHeight = self.collectionView.bounds.height
-                let threshold: CGFloat = 100
-                return offset.y + scrollViewHeight + threshold >= contentHeight
+        // 优化滚动检测逻辑
+        collectionView.rx.willDisplayCell
+            .observe(on: MainScheduler.instance)  // 确保在主线程处理
+            .map { cell, indexPath in
+                return indexPath
             }
+            .filter { [weak self] indexPath in
+                guard let self = self,
+                      let totalItems = self.collectionView.dataSource?.collectionView(self.collectionView, numberOfItemsInSection: 0)
+                else { return false }
+                
+                let triggerIndex = Int(Double(totalItems) * 0.7)
+                return indexPath.item >= triggerIndex
+            }
+            .debounce(.milliseconds(100), scheduler: MainScheduler.instance)  // 添加防抖
             .distinctUntilChanged()
-            .filter { $0 }
             .map { _ in () }
             .bind(to: loadMoreSubject)
             .disposed(by: vm.disposeBag)

@@ -36,7 +36,10 @@ class STAlbumService {
                 let assets = PHAsset.fetchAssets(in: collection, options: nil)
                 if assets.count > 0 {
                     group.enter()
-                    self.fetchThumbnail(for: assets.firstObject!) { thumbnail in
+                    self.requestImage(
+                        for: assets.firstObject!,
+                        targetSize: CGSize(width: 300, height: 300)
+                    ) { thumbnail in
                         let info = AlbumInfo(
                             collection: collection,
                             name: collection.localizedTitle ?? "",
@@ -56,7 +59,10 @@ class STAlbumService {
                 let assets = PHAsset.fetchAssets(in: collection, options: nil)
                 if assets.count > 0 {
                     group.enter()
-                    self.fetchThumbnail(for: assets.firstObject!) { thumbnail in
+                    self.requestImage(
+                        for: assets.firstObject!,
+                        targetSize: CGSize(width: 300, height: 300)
+                    ) { thumbnail in
                         let info = AlbumInfo(
                             collection: collection,
                             name: collection.localizedTitle ?? "",
@@ -84,7 +90,7 @@ class STAlbumService {
     func fetchPhotos(from collection: PHAssetCollection, page: Int, pageSize: Int) -> Observable<[PhotoInfo]> {
         return Observable.create { observer in
             let fetchOptions = PHFetchOptions()
-            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
+            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
             
             let assets = PHAsset.fetchAssets(in: collection, options: fetchOptions)
             let start = page * pageSize
@@ -96,26 +102,16 @@ class STAlbumService {
                 return Disposables.create()
             }
             
+            // 只创建 PhotoInfo 对象，不加载图片
             var photos: [PhotoInfo] = []
-            let group = DispatchGroup()
-            
-            for index in start..<end {
-                let asset = assets[index]
-                group.enter()
-                self.fetchThumbnail(for: asset) { thumbnail in
-                    let photo = PhotoInfo(
-                        asset: asset,
-                        thumbnail: thumbnail
-                    )
-                    photos.append(photo)
-                    group.leave()
-                }
+            for i in start..<end {
+                let asset = assets[i]
+                let photo = PhotoInfo(asset: asset, thumbnail: nil)
+                photos.append(photo)
             }
             
-            group.notify(queue: .main) {
-                observer.onNext(photos)
-                observer.onCompleted()
-            }
+            observer.onNext(photos)
+            observer.onCompleted()
             
             return Disposables.create()
         }
@@ -162,19 +158,95 @@ class STAlbumService {
         }
     }
     
-    private func fetchThumbnail(for asset: PHAsset, completion: @escaping (UIImage?) -> Void) {
+    /// 统一的图片请求方法
+    private func requestImage(for asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage?) -> Void) {
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
         option.deliveryMode = .fastFormat
+        option.isNetworkAccessAllowed = true
+        option.resizeMode = .exact
         option.isSynchronous = false
+        
+        let scale = UIScreen.main.scale
+        let scaledSize = CGSize(
+            width: targetSize.width * scale,
+            height: targetSize.height * scale
+        )
         
         manager.requestImage(
             for: asset,
-            targetSize: CGSize(width: 200, height: 200),
+            targetSize: scaledSize,
             contentMode: .aspectFill,
             options: option
-        ) { image, _ in
+        ) { image, info in
+            if let degraded = info?[PHImageResultIsDegradedKey] as? Bool, degraded {
+                return
+            }
             completion(image)
+        }
+    }
+    
+    /// 为单个 asset 加载缩略图
+    func loadThumbnail(for asset: PHAsset, targetSize: CGSize) -> Observable<UIImage?> {
+        return Observable.create { observer in
+            let manager = PHImageManager.default()
+            var highQualityRequestID: PHImageRequestID?
+            
+            // 先加载缩略图的选项
+            let thumbnailOption = PHImageRequestOptions()
+            thumbnailOption.deliveryMode = .fastFormat
+            thumbnailOption.isNetworkAccessAllowed = true
+            thumbnailOption.resizeMode = .fast
+            thumbnailOption.isSynchronous = false
+            
+            // 高清图的选项
+            let highQualityOption = PHImageRequestOptions()
+            highQualityOption.deliveryMode = .highQualityFormat
+            highQualityOption.isNetworkAccessAllowed = true
+            highQualityOption.resizeMode = .exact
+            highQualityOption.isSynchronous = false
+            
+            let scale = UIScreen.main.scale
+            let scaledSize = CGSize(
+                width: targetSize.width * scale,
+                height: targetSize.height * scale
+            )
+            
+            // 先请求缩略图
+            let thumbnailRequestID = manager.requestImage(
+                for: asset,
+                targetSize: scaledSize,
+                contentMode: .aspectFill,
+                options: thumbnailOption
+            ) { image, info in
+                if let image = image {
+                    observer.onNext(image)
+                }
+                
+                // 再请求高清图
+                highQualityRequestID = manager.requestImage(
+                    for: asset,
+                    targetSize: scaledSize,
+                    contentMode: .aspectFill,
+                    options: highQualityOption
+                ) { image, info in
+                    if let degraded = info?[PHImageResultIsDegradedKey] as? Bool, degraded {
+                        return
+                    }
+                    if let image = image {
+                        observer.onNext(image)
+                    }
+                    observer.onCompleted()
+                }
+            }
+            
+            // 返回清理函数
+            return Disposables.create {
+                manager.cancelImageRequest(thumbnailRequestID)
+                if let highQualityRequestID = highQualityRequestID {
+                    manager.cancelImageRequest(highQualityRequestID)
+                }
+            }
         }
     }
 } 

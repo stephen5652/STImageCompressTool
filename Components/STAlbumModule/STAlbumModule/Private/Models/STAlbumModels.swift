@@ -11,7 +11,12 @@ struct AlbumInfo {
     let thumbnail: UIImage?
 }
 
-struct PhotoInfo {
+struct PhotoInfo: Equatable {
     let asset: PHAsset
-    let thumbnail: UIImage?
+    var thumbnail: UIImage?
+    
+    static func == (lhs: PhotoInfo, rhs: PhotoInfo) -> Bool {
+        // 只比较 asset 的 localIdentifier，因为 UIImage 不遵循 Equatable
+        return lhs.asset.localIdentifier == rhs.asset.localIdentifier
+    }
 } 
