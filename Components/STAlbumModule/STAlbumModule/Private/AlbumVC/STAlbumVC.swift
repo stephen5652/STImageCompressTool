@@ -22,17 +22,36 @@ import Photos
 class STAlbumVC: STBaseVCMvvm {
     var vm = STAlbumVM()
     
+    // 添加布局配置结构体
+    private struct LayoutConfig {
+        var itemsPerRow: Int = 5
+        var spacing: CGFloat = 1
+        
+        func itemSize(in width: CGFloat) -> CGSize {
+            let totalSpacing = spacing * CGFloat(itemsPerRow + 1)
+            let itemWidth = (width - totalSpacing) / CGFloat(itemsPerRow)
+            return CGSize(width: itemWidth, height: itemWidth)
+        }
+        
+        func flowLayout(in width: CGFloat) -> UICollectionViewFlowLayout {
+            let layout = UICollectionViewFlowLayout()
+            layout.minimumLineSpacing = spacing
+            layout.minimumInteritemSpacing = spacing
+            layout.itemSize = itemSize(in: width)
+            layout.sectionInset = UIEdgeInsets(
+                top: spacing,
+                left: spacing,
+                bottom: spacing,
+                right: spacing
+            )
+            return layout
+        }
+    }
+    
+    private var config = LayoutConfig()
+    
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        let spacing: CGFloat = 1  // 减小间距
-        layout.minimumLineSpacing = spacing
-        layout.minimumInteritemSpacing = spacing
-        
-        // 计算每行显示4个图片的大小
-        let itemWidth = (UIScreen.main.bounds.width - spacing * 5) / 4  // 5个间隔（两边各一个，中间3个）
-        layout.itemSize = CGSize(width: itemWidth, height: itemWidth)
-        layout.sectionInset = UIEdgeInsets(top: spacing, left: spacing, bottom: spacing, right: spacing)
-        
+        let layout = config.flowLayout(in: UIScreen.main.bounds.width)
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
         cv.backgroundColor = .white
         cv.register(AlbumCell.self, forCellWithReuseIdentifier: "AlbumCell")
@@ -44,6 +63,7 @@ class STAlbumVC: STBaseVCMvvm {
     private let loadMoreSubject = PublishSubject<Void>()
     private let albumTypeSelectedSubject = PublishSubject<AlbumType>()
     private let albumCollectionSelectedSubject = PublishSubject<PHAssetCollection>()
+    private let loadDefaultAlbumSubject = PublishSubject<Void>()
     
     private func setupCollectionViewLayout() {
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
@@ -60,12 +80,12 @@ class STAlbumVC: STBaseVCMvvm {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "最近添加"
+        title = "相册"
         setupNavigationBar()
         setupCollectionViewLayout()
-        checkPhotoLibraryPermission()
         setUpUI()
         bindData()
+        checkPhotoLibraryPermission()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -86,13 +106,15 @@ class STAlbumVC: STBaseVCMvvm {
             PHPhotoLibrary.requestAuthorization { [weak self] status in
                 DispatchQueue.main.async {
                     if status == .authorized {
-                        self?.viewWillAppearSubject.onNext(())
+                        self?.loadDefaultAlbumSubject.onNext(())
                     } else {
                         self?.showPermissionDeniedAlert()
                     }
                 }
             }
-        } else if status != .authorized {
+        } else if status == .authorized {
+            loadDefaultAlbumSubject.onNext(())
+        } else {
             showPermissionDeniedAlert()
         }
     }
@@ -117,12 +139,20 @@ class STAlbumVC: STBaseVCMvvm {
     
     private func setupNavigationBar() {
         let rightButton = UIBarButtonItem(
-            title: "切换相册",
+            title: "相册列表",
             style: .plain,
             target: self,
             action: #selector(showAlbumTypeSelector)
         )
-        navigationItem.rightBarButtonItem = rightButton
+        
+        let layoutButton = UIBarButtonItem(
+            title: "布局",
+            style: .plain,
+            target: self,
+            action: #selector(showLayoutOptions)
+        )
+        
+        navigationItem.rightBarButtonItems = [rightButton, layoutButton]
     }
     
     @objc private func showAlbumTypeSelector() {
@@ -147,13 +177,66 @@ class STAlbumVC: STBaseVCMvvm {
         }
     }
     
+    @objc private func showLayoutOptions() {
+        let alert = UIAlertController(
+            title: "选择布局",
+            message: nil,
+            preferredStyle: .actionSheet
+        )
+        
+        [3, 4, 5].forEach { count in
+            alert.addAction(UIAlertAction(
+                title: "每行\(count)张",
+                style: .default
+            ) { [weak self] _ in
+                self?.updateLayout(itemsPerRow: count)
+            })
+        }
+        
+        alert.addAction(UIAlertAction(title: "取消", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
+    private func updateLayout(itemsPerRow: Int) {
+        config.itemsPerRow = itemsPerRow
+        
+        if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+            let newLayout = config.flowLayout(in: view.bounds.width)
+            layout.itemSize = newLayout.itemSize
+            layout.minimumLineSpacing = newLayout.minimumLineSpacing
+            layout.minimumInteritemSpacing = newLayout.minimumInteritemSpacing
+            layout.sectionInset = newLayout.sectionInset
+            
+            UIView.animate(withDuration: 0.3) {
+                self.collectionView.collectionViewLayout.invalidateLayout()
+            }
+        }
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate { _ in
+            if let layout = self.collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
+                let newLayout = self.config.flowLayout(in: size.width)
+                layout.itemSize = newLayout.itemSize
+                layout.minimumLineSpacing = newLayout.minimumLineSpacing
+                layout.minimumInteritemSpacing = newLayout.minimumInteritemSpacing
+                layout.sectionInset = newLayout.sectionInset
+                self.collectionView.collectionViewLayout.invalidateLayout()
+            }
+        }
+    }
+    
     func bindData() {
         let input = STAlbumVM.Input(
             viewWillAppear: viewWillAppearSubject.asObservable(),
             itemSelected: selectedIndexSubject.asObservable(),
             loadMore: loadMoreSubject.asObservable(),
             albumTypeSelected: albumTypeSelectedSubject.asObservable(),
-            albumCollectionSelected: albumCollectionSelectedSubject.asObservable()
+            albumCollectionSelected: albumCollectionSelectedSubject.asObservable(),
+            loadDefaultAlbum: loadDefaultAlbumSubject.asObservable()
         )
         
         let output = vm.transformInput(input)
@@ -208,6 +291,13 @@ class STAlbumVC: STBaseVCMvvm {
         output.currentAlbumType
             .map { $0.title }
             .bind(to: navigationItem.rx.title)
+            .disposed(by: vm.disposeBag)
+        
+        // 处理默认相册加载完成
+        output.defaultAlbumLoaded
+            .subscribe(onNext: { [weak self] _ in
+                // 可以在这里处理UI更新等
+            })
             .disposed(by: vm.disposeBag)
     }
 }

@@ -18,14 +18,20 @@ class STAlbumVM: STViewModelProtocol {
     
     private var selectedCollection: PHAssetCollection?
     
+    private var pageSize: Int
+    
+    private let photosRelay = BehaviorRelay<[PhotoInfo]>(value: [])
+    private let errorRelay = PublishRelay<Error>()
+    private var currentPage = 0
+    private var isLoading = false
+    private var hasMoreData = true
+    private var isPreloading = false
+    private let preloadThreshold = 0.7
+    
+    private let defaultAlbumLoadedRelay = PublishRelay<Void>()
+    
     init() {
-        // 在初始化时获取默认相册
-        STAlbumService.shared.fetchDefaultAlbum()
-            .compactMap { $0 }
-            .subscribe(onNext: { [weak self] collection in
-                self?.selectedCollection = collection
-            })
-            .disposed(by: disposeBag)
+        self.pageSize = 60
     }
     
     struct Input {
@@ -34,6 +40,7 @@ class STAlbumVM: STViewModelProtocol {
         let loadMore: Observable<Void>
         let albumTypeSelected: Observable<AlbumType>
         let albumCollectionSelected: Observable<PHAssetCollection>
+        let loadDefaultAlbum: Observable<Void>
     }
     
     struct OutPut {
@@ -41,26 +48,8 @@ class STAlbumVM: STViewModelProtocol {
         let selectedAlbum: Observable<AlbumModel>
         let error: Observable<Error>
         let currentAlbumType: Observable<AlbumType>
+        let defaultAlbumLoaded: Observable<Void>
     }
-    
-    private let photosRelay = BehaviorRelay<[PhotoInfo]>(value: [])
-    private let errorRelay = PublishRelay<Error>()
-    private var currentPage = 0
-    private let pageSize: Int = {
-        // 增加每页数量，减少加载次数
-        let screenHeight = UIScreen.main.bounds.height
-        let spacing: CGFloat = 1
-        let itemWidth = (UIScreen.main.bounds.width - spacing * 5) / 4
-        let rowCount = Int(screenHeight / (itemWidth + spacing))
-        // 每页加载3屏的数据
-        return rowCount * 4 * 3
-    }()
-    private var isLoading = false
-    private var hasMoreData = true
-    
-    // 添加预加载标志
-    private var isPreloading = false
-    private let preloadThreshold = 0.7  // 当显示70%的内容时开始预加载
     
     func transformInput(_ input: Input) -> OutPut {
         // 处理相册类型选择
@@ -90,11 +79,40 @@ class STAlbumVM: STViewModelProtocol {
             .bind(to: photosRelay)
             .disposed(by: disposeBag)
         
-        // 修改 viewWillAppear 处理，加载默认相册
-        input.viewWillAppear
-            .flatMapLatest { [weak self] _ -> Observable<[PhotoInfo]> in
-                guard let self = self, let collection = self.selectedCollection else { return .empty() }
-                return STAlbumService.shared.fetchPhotos(from: collection, page: self.currentPage, pageSize: self.pageSize)
+        // 处理加载默认相册
+        input.loadDefaultAlbum
+            .flatMapLatest { [weak self] _ -> Observable<PHAssetCollection?> in
+                guard let self = self else { return .empty() }
+                
+                return Observable.create { observer in
+                    let smartAlbums = PHAssetCollection.fetchAssetCollections(
+                        with: .smartAlbum,
+                        subtype: .any,
+                        options: nil
+                    )
+                    
+                    var firstAlbum: PHAssetCollection?
+                    smartAlbums.enumerateObjects { collection, _, stop in
+                        let assets = PHAsset.fetchAssets(in: collection, options: nil)
+                        if assets.count > 0 {
+                            firstAlbum = collection
+                            stop.pointee = true
+                        }
+                    }
+                    
+                    observer.onNext(firstAlbum)
+                    observer.onCompleted()
+                    return Disposables.create()
+                }
+            }
+            .compactMap { $0 }
+            .do(onNext: { [weak self] album in
+                self?.selectedCollection = album
+                self?.defaultAlbumLoadedRelay.accept(())
+            })
+            .flatMapLatest { [weak self] album -> Observable<[PhotoInfo]> in
+                guard let self = self else { return .empty() }
+                return STAlbumService.shared.fetchPhotos(from: album, page: self.currentPage, pageSize: self.pageSize)
                     .catch { error in
                         self.errorRelay.accept(error)
                         return .just([])
@@ -158,7 +176,8 @@ class STAlbumVM: STViewModelProtocol {
                 },
             selectedAlbum: selectedAlbum,
             error: errorRelay.asObservable(),
-            currentAlbumType: selectedAlbumTypeRelay.asObservable()
+            currentAlbumType: selectedAlbumTypeRelay.asObservable(),
+            defaultAlbumLoaded: defaultAlbumLoadedRelay.asObservable()
         )
     }
     
@@ -352,6 +371,24 @@ class STAlbumVM: STViewModelProtocol {
             observer.onCompleted()
             
             return Disposables.create()
+        }
+    }
+    
+    // 添加更新页面大小的方法
+    func updatePageSize(_ newSize: Int) {
+        pageSize = newSize
+        // 如果需要，可以在这里重新加载数据
+        if let collection = selectedCollection {
+            currentPage = 0
+            hasMoreData = true
+            isLoading = false  // 重置加载状态
+            STAlbumService.shared.fetchPhotos(from: collection, page: currentPage, pageSize: pageSize)
+                .catch { error in
+                    self.errorRelay.accept(error)
+                    return .just([])
+                }
+                .bind(to: photosRelay)
+                .disposed(by: disposeBag)
         }
     }
 }

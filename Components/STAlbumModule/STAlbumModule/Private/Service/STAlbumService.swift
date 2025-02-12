@@ -89,26 +89,32 @@ class STAlbumService {
     /// 从指定相册获取照片
     func fetchPhotos(from collection: PHAssetCollection, page: Int, pageSize: Int) -> Observable<[PhotoInfo]> {
         return Observable.create { observer in
-            let fetchOptions = PHFetchOptions()
-            fetchOptions.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: true)]
+            let assets = PHAsset.fetchAssets(in: collection, options: nil)
+            let totalCount = assets.count
             
-            let assets = PHAsset.fetchAssets(in: collection, options: fetchOptions)
-            let start = page * pageSize
-            let end = min(start + pageSize, assets.count)
-            
-            if start >= assets.count {
+            if totalCount == 0 {
                 observer.onNext([])
                 observer.onCompleted()
                 return Disposables.create()
             }
             
-            // 只创建 PhotoInfo 对象，不加载图片
-            var photos: [PhotoInfo] = []
-            for i in start..<end {
-                let asset = assets[i]
-                let photo = PhotoInfo(asset: asset, thumbnail: nil)
-                photos.append(photo)
+            // 从后往前计算索引
+            let end = totalCount - (page * pageSize)
+            let start = max(end - pageSize, 0)
+            
+            if end <= 0 {
+                observer.onNext([])
+                observer.onCompleted()
+                return Disposables.create()
             }
+            
+            // 使用 map 转换索引范围到 PhotoInfo 数组
+            let photos = (start..<end)
+                .reversed()
+                .map { i -> PhotoInfo in
+                    let asset = assets[i]
+                    return PhotoInfo(asset: asset, thumbnail: nil)
+                }
             
             observer.onNext(photos)
             observer.onCompleted()
