@@ -33,6 +33,21 @@ private class STAlbumModuleRegisterRouter: NSObject, STRouterRegisterProtocol {
             let vc = STAlbumVC()
             topVC.navigationController?.pushViewController(vc, animated: true)
         }
+        
+        stRouterRegisterUrlParttern(STRouterDefine.kRouter_PhotoPreview, nil) { (req: STRouterUrlRequest, com: STRouterUrlCompletion?) in
+            let topVC = req.fromVC ?? UIViewController.mt_top()
+            
+            guard let albumCollection = req.parameter[STRouterDefine.kRouterPara_AlbumCollection] as? PHAssetCollection else {
+                
+                return
+            }
+            
+            let curIdx = req.parameter[STRouterDefine.kRouterPara_CurIdndex] as? IndexPath ?? IndexPath(row: 0, section: 0)
+            
+            let vc = STPhotoPreviewVC(collection: albumCollection, currentIndex: curIdx)
+            topVC.navigationController?.pushViewController(vc, animated: true)
+        }
+        
     }
 }
 

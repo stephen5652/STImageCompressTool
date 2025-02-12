@@ -21,6 +21,7 @@ import Photos
 
 class STAlbumVC: STBaseVCMvvm {
     var vm = STAlbumVM()
+    private let disposeBag = DisposeBag()  // 使用自己的 disposeBag
     
     // 添加布局配置结构体
     private struct LayoutConfig {
@@ -61,7 +62,6 @@ class STAlbumVC: STBaseVCMvvm {
     private let viewWillAppearSubject = PublishSubject<Void>()
     private let selectedIndexSubject = PublishSubject<IndexPath>()
     private let loadMoreSubject = PublishSubject<Void>()
-    private let albumTypeSelectedSubject = PublishSubject<AlbumType>()
     private let albumCollectionSelectedSubject = PublishSubject<PHAssetCollection>()
     private let loadDefaultAlbumSubject = PublishSubject<Void>()
     
@@ -234,35 +234,43 @@ class STAlbumVC: STBaseVCMvvm {
             viewWillAppear: viewWillAppearSubject.asObservable(),
             itemSelected: selectedIndexSubject.asObservable(),
             loadMore: loadMoreSubject.asObservable(),
-            albumTypeSelected: albumTypeSelectedSubject.asObservable(),
             albumCollectionSelected: albumCollectionSelectedSubject.asObservable(),
             loadDefaultAlbum: loadDefaultAlbumSubject.asObservable()
         )
         
         let output = vm.transformInput(input)
         
-        // 优化 CollectionView 绑定
+        // 使用 self.disposeBag 替换 vm.disposeBag
         output.photos
-            .observe(on: MainScheduler.instance)  // 确保在主线程更新 UI
+            .observe(on: MainScheduler.instance)
             .bind(to: collectionView.rx.items(cellIdentifier: "AlbumCell", cellType: AlbumCell.self)) { [weak self] index, model, cell in
                 cell.configure(with: model)
             }
-            .disposed(by: vm.disposeBag)
+            .disposed(by: disposeBag)
         
         output.selectedAlbum
-            .subscribe(onNext: { [weak self] album in
-                // TODO: 处理相册选择，跳转到相册详情页
-                print("Selected album: \(album.name)")
+            .subscribe(onNext: { [weak self] result in
+                let collection = result.collection
+                let indexPath = result.indexPath
+                print("Selected album: \(collection.localizedTitle ?? ""), at index: \(indexPath)")
+                let routerReq = STRouterUrlRequest.instance { builder in
+                    builder.urlToOpen = STRouterDefine.kRouter_PhotoPreview
+                    builder.parameter = [
+                        STRouterDefine.kRouterPara_AlbumCollection: collection,
+                        STRouterDefine.kRouterPara_CurIdndex: indexPath,
+                    ]
+                }
+                
+                stRouterOpenUrlRequest(routerReq) { _ in }
             })
-            .disposed(by: vm.disposeBag)
+            .disposed(by: disposeBag)
         
         collectionView.rx.itemSelected
             .bind(to: selectedIndexSubject)
-            .disposed(by: vm.disposeBag)
+            .disposed(by: disposeBag)
         
-        // 优化滚动检测逻辑
         collectionView.rx.willDisplayCell
-            .observe(on: MainScheduler.instance)  // 确保在主线程处理
+            .observe(on: MainScheduler.instance)
             .map { cell, indexPath in
                 return indexPath
             }
@@ -274,31 +282,31 @@ class STAlbumVC: STBaseVCMvvm {
                 let triggerIndex = Int(Double(totalItems) * 0.7)
                 return indexPath.item >= triggerIndex
             }
-            .debounce(.milliseconds(100), scheduler: MainScheduler.instance)  // 添加防抖
+            .debounce(.milliseconds(100), scheduler: MainScheduler.instance)
             .distinctUntilChanged()
             .map { _ in () }
             .bind(to: loadMoreSubject)
-            .disposed(by: vm.disposeBag)
+            .disposed(by: disposeBag)
         
         output.error
             .subscribe(onNext: { [weak self] error in
-                // TODO: 显示错误提示
                 print("Error: \(error)")
             })
-            .disposed(by: vm.disposeBag)
-        
-        // 监听相册类型变化，更新标题
-        output.currentAlbumType
-            .map { $0.title }
-            .bind(to: navigationItem.rx.title)
-            .disposed(by: vm.disposeBag)
+            .disposed(by: disposeBag)
         
         // 处理默认相册加载完成
-        output.defaultAlbumLoaded
-            .subscribe(onNext: { [weak self] _ in
-                // 可以在这里处理UI更新等
-            })
-            .disposed(by: vm.disposeBag)
+        Observable.combineLatest(
+            output.selectedCollection,
+            output.totalCount
+        )
+        .compactMap { collection, totalCount -> (PHAssetCollection, Int)? in
+            guard let collection = collection else { return nil }
+            return (collection, totalCount)
+        }
+        .subscribe(onNext: { [weak self] collection, totalCount in
+            self?.title = "\(collection.localizedTitle ?? "") (\(totalCount))"
+        })
+        .disposed(by: disposeBag)
     }
 }
 

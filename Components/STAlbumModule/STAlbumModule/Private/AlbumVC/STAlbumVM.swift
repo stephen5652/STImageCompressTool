@@ -12,11 +12,12 @@ import RxCocoa
 import Photos
 
 class STAlbumVM: STViewModelProtocol {
-    var disposeBag = RxSwift.DisposeBag()
+    internal var disposeBag = DisposeBag()
     
     private let selectedAlbumTypeRelay = BehaviorRelay<AlbumType>(value: .recentlyAdded)
+    private let selectedCollectionRelay = BehaviorRelay<PHAssetCollection?>(value: nil)
     
-    private var selectedCollection: PHAssetCollection?
+    var selectedCollection: PHAssetCollection?
     
     private var pageSize: Int
     
@@ -29,6 +30,7 @@ class STAlbumVM: STViewModelProtocol {
     private let preloadThreshold = 0.7
     
     private let defaultAlbumLoadedRelay = PublishRelay<Void>()
+    private let totalCountRelay = BehaviorRelay<Int>(value: 0)
     
     init() {
         self.pageSize = 60
@@ -38,35 +40,32 @@ class STAlbumVM: STViewModelProtocol {
         let viewWillAppear: Observable<Void>
         let itemSelected: Observable<IndexPath>
         let loadMore: Observable<Void>
-        let albumTypeSelected: Observable<AlbumType>
         let albumCollectionSelected: Observable<PHAssetCollection>
         let loadDefaultAlbum: Observable<Void>
     }
     
     struct OutPut {
         let photos: Observable<[PhotoInfo]>
-        let selectedAlbum: Observable<AlbumModel>
+        let selectedAlbum: Observable<(collection: PHAssetCollection, indexPath: IndexPath)>
         let error: Observable<Error>
         let currentAlbumType: Observable<AlbumType>
         let defaultAlbumLoaded: Observable<Void>
+        let selectedCollection: Observable<PHAssetCollection?>
+        let totalCount: Observable<Int>
     }
     
     func transformInput(_ input: Input) -> OutPut {
-        // 处理相册类型选择
-        input.albumTypeSelected
-            .do(onNext: { [weak self] _ in
-                self?.currentPage = 0
-                self?.hasMoreData = true
-            })
-            .bind(to: selectedAlbumTypeRelay)
-            .disposed(by: disposeBag)
-        
         // 处理相册选择
         input.albumCollectionSelected
             .do(onNext: { [weak self] collection in
                 self?.selectedCollection = collection
+                self?.selectedCollectionRelay.accept(collection)
                 self?.currentPage = 0
                 self?.hasMoreData = true
+                
+                // 获取并更新总数
+                let assets = PHAsset.fetchAssets(in: collection, options: nil)
+                self?.totalCountRelay.accept(assets.count)
             })
             .flatMapLatest { [weak self] collection -> Observable<[PhotoInfo]> in
                 guard let self = self else { return .empty() }
@@ -108,17 +107,28 @@ class STAlbumVM: STViewModelProtocol {
             .compactMap { $0 }
             .do(onNext: { [weak self] album in
                 self?.selectedCollection = album
-                self?.defaultAlbumLoadedRelay.accept(())
+                
+                // 获取并更新总数
+                let assets = PHAsset.fetchAssets(in: album, options: nil)
+                self?.totalCountRelay.accept(assets.count)
             })
-            .flatMapLatest { [weak self] album -> Observable<[PhotoInfo]> in
+            .flatMapLatest { [weak self] album -> Observable<(PHAssetCollection, [PhotoInfo])> in
                 guard let self = self else { return .empty() }
                 return STAlbumService.shared.fetchPhotos(from: album, page: self.currentPage, pageSize: self.pageSize)
+                    .map { photos in
+                        return (album, photos)
+                    }
                     .catch { error in
                         self.errorRelay.accept(error)
-                        return .just([])
+                        return .empty()
                     }
             }
-            .bind(to: photosRelay)
+            .do(onNext: { [weak self] _, photos in
+                self?.photosRelay.accept(photos)
+                self?.defaultAlbumLoadedRelay.accept(())
+            })
+            .map { album, _ in album }
+            .bind(to: selectedCollectionRelay)
             .disposed(by: disposeBag)
         
         // 优化加载更多的处理
@@ -157,14 +167,14 @@ class STAlbumVM: STViewModelProtocol {
         
         // 处理选择
         let selectedAlbum = input.itemSelected
-            .withLatestFrom(photosRelay) { indexPath, photos in
-                return AlbumModel(
-                    id: photos[indexPath.row].asset.localIdentifier,
-                    name: "",
-                    count: 0,
-                    thumbnail: photos[indexPath.row].thumbnail
+            .map { indexPath -> (collection: PHAssetCollection, indexPath: IndexPath)? in
+                guard let collection = self.selectedCollection else { return nil }
+                return (
+                    collection: collection,
+                    indexPath: indexPath
                 )
             }
+            .compactMap { $0 }
         
         return OutPut(
             photos: photosRelay.asObservable()
@@ -177,7 +187,9 @@ class STAlbumVM: STViewModelProtocol {
             selectedAlbum: selectedAlbum,
             error: errorRelay.asObservable(),
             currentAlbumType: selectedAlbumTypeRelay.asObservable(),
-            defaultAlbumLoaded: defaultAlbumLoadedRelay.asObservable()
+            defaultAlbumLoaded: defaultAlbumLoadedRelay.asObservable(),
+            selectedCollection: selectedCollectionRelay.asObservable(),
+            totalCount: totalCountRelay.asObservable()
         )
     }
     
