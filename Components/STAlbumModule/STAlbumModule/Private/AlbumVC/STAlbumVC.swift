@@ -184,7 +184,7 @@ class STAlbumVC: STBaseVCMvvm {
             preferredStyle: .actionSheet
         )
         
-        [3, 4, 5].forEach { count in
+        [3, 4, 5, 6, 7, 8].forEach { count in
             alert.addAction(UIAlertAction(
                 title: "每行\(count)张",
                 style: .default
