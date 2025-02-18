@@ -6,9 +6,9 @@
 //
 
 import STAllBase
+import STAlbumModule
 
 class STRouterRegist: NSObject, STRouterRegisterProtocol {
     static func stRouterRegisterExecute() {
-        
     }
 }

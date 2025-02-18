@@ -8,7 +8,7 @@ Pod::Spec.new do |spec|
   DESC
 
   spec.homepage         = 'http://github.com/StephenChen/STAlbumModule'
-  spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  spec.license      = { :type => "MIT", :file => "LICENSE" }
   spec.author             = { "StephenChen" => "stephen.chen@hellotalk.cn" }
   spec.ios.deployment_target = '13.0'
 

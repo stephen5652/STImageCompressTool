@@ -37,6 +37,8 @@ def pod_components
   'STAllBase',
   'STBaseModel',
   'STAlbumModule',
+  'STMessageModule',
+  
   ]
    st_installLocalPods(dir, arr)
 end
@@ -52,6 +54,7 @@ target 'STImageCompressTool_Example' do
   pod 'RxCocoa', '~> 6.5.0'
   pod 'RxRelay', '~> 6.5.0'
   pod 'RxGesture', '~> 4.0.4'
+  pod 'RxDataSources'
   
   pod 'Kingfisher', '8.1.0'
   pod 'MTCategoryComponent', :git => "https://github.com/STTechnology5652/MTCategoryComponent.git"

@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		3DC236094D9F073F848079D9 /* Pods_STImageCompressTool_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */; };
 		59CF9B4E5DFEB438EAD93013 /* Pods_STImageCompressTool_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */; };
+		8C2C12152D643A6E00E5A541 /* STViewControllerMore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C12132D643A6E00E5A541 /* STViewControllerMore.swift */; };
+		8C2C12162D643A6E00E5A541 /* STViewControllerMore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C12132D643A6E00E5A541 /* STViewControllerMore.swift */; };
+		8C2C12182D643AA900E5A541 /* STMoreModuleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C12172D643AA900E5A541 /* STMoreModuleVM.swift */; };
+		8C2C12192D643AA900E5A541 /* STMoreModuleVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2C12172D643AA900E5A541 /* STMoreModuleVM.swift */; };
 		8C8F956D2D5C831100C65F66 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB0578B2D531A8D007CAAC6 /* ViewController.swift */; };
 		8C8F956E2D5C831100C65F66 /* ImageCompressCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB057892D531A8D007CAAC6 /* ImageCompressCellViewModel.swift */; };
 		8C8F956F2D5C831100C65F66 /* ImageCompressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB057882D531A8D007CAAC6 /* ImageCompressCell.swift */; };
@@ -34,6 +38,8 @@
 /* Begin PBXFileReference section */
 		57053375F90C9077CF8A5B38 /* Pods-STImageCompressTool_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STImageCompressTool_Example.debug.xcconfig"; path = "Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		86F1213D5B288E186D6BB7D9 /* Pods_STImageCompressTool_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_STImageCompressTool_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C2C12132D643A6E00E5A541 /* STViewControllerMore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STViewControllerMore.swift; sourceTree = "<group>"; };
+		8C2C12172D643AA900E5A541 /* STMoreModuleVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STMoreModuleVM.swift; sourceTree = "<group>"; };
 		8C8F957E2D5C831100C65F66 /* STImageCompressTool_Q.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = STImageCompressTool_Q.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C8F957F2D5C831100C65F66 /* STImageCompressTool_Example copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "STImageCompressTool_Example copy-Info.plist"; path = "/Users/stephenli/Desktop/STImageCompressTool/Example/STImageCompressTool_Example copy-Info.plist"; sourceTree = "<absolute>"; };
 		BB48F13DE54143CE1A51F0CE /* Pods-STImageCompressTool_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-STImageCompressTool_Example.release.xcconfig"; path = "Target Support Files/Pods-STImageCompressTool_Example/Pods-STImageCompressTool_Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -80,6 +86,15 @@
 				BB48F13DE54143CE1A51F0CE /* Pods-STImageCompressTool_Example.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		8C2C12142D643A6E00E5A541 /* MoreModule */ = {
+			isa = PBXGroup;
+			children = (
+				8C2C12132D643A6E00E5A541 /* STViewControllerMore.swift */,
+				8C2C12172D643AA900E5A541 /* STMoreModuleVM.swift */,
+			);
+			path = MoreModule;
 			sourceTree = "<group>";
 		};
 		CEB057822D530EE8007CAAC6 /* RouterServiceRegist */ = {
@@ -151,6 +166,7 @@
 				FDDD8565299DED6500EAB62E /* AppDelegate.swift */,
 				CEB0577C2D53080C007CAAC6 /* STEmptyOc.h */,
 				CEB0577D2D53080C007CAAC6 /* STEmptyOc.m */,
+				8C2C12142D643A6E00E5A541 /* MoreModule */,
 				CEB0578C2D531A8D007CAAC6 /* Home */,
 				CEB057822D530EE8007CAAC6 /* RouterServiceRegist */,
 				FDDD856B299DED6500EAB62E /* Main.storyboard */,
@@ -310,9 +326,11 @@
 				8C8F956D2D5C831100C65F66 /* ViewController.swift in Sources */,
 				8C8F956E2D5C831100C65F66 /* ImageCompressCellViewModel.swift in Sources */,
 				8C8F956F2D5C831100C65F66 /* ImageCompressCell.swift in Sources */,
+				8C2C12192D643AA900E5A541 /* STMoreModuleVM.swift in Sources */,
 				8C8F95702D5C831100C65F66 /* ImageCompressViewModel.swift in Sources */,
 				8C8F95712D5C831100C65F66 /* AppDelegate.swift in Sources */,
 				8C8F95722D5C831100C65F66 /* STRouterRegist.swift in Sources */,
+				8C2C12162D643A6E00E5A541 /* STViewControllerMore.swift in Sources */,
 				8C8F95732D5C831100C65F66 /* STEmptyOc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -324,9 +342,11 @@
 				CEB0578E2D531A8D007CAAC6 /* ViewController.swift in Sources */,
 				CEB0578F2D531A8D007CAAC6 /* ImageCompressCellViewModel.swift in Sources */,
 				CEB057902D531A8D007CAAC6 /* ImageCompressCell.swift in Sources */,
+				8C2C12182D643AA900E5A541 /* STMoreModuleVM.swift in Sources */,
 				CEB057912D531A8D007CAAC6 /* ImageCompressViewModel.swift in Sources */,
 				FDDD8566299DED6500EAB62E /* AppDelegate.swift in Sources */,
 				CEB057832D530EE8007CAAC6 /* STRouterRegist.swift in Sources */,
+				8C2C12152D643A6E00E5A541 /* STViewControllerMore.swift in Sources */,
 				CEB0577E2D53080C007CAAC6 /* STEmptyOc.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

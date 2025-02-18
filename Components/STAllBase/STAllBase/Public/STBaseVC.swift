@@ -8,6 +8,7 @@
 import UIKit
 
 import STRxInOutPutProtocol
+import CYLTabBarController
 
 public typealias STBaseVCMvvm = STBaseVC & STMvvmProtocol
 
@@ -19,7 +20,7 @@ public class STBaseNavVC: CYLBaseNavigationController {
     }
 }
 
-open class STBaseVC: UIViewController {
+open class STBaseVC: CYLBaseViewController {
 
     open override func viewDidLoad() {
         super.viewDidLoad()

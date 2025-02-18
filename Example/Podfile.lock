@@ -2,6 +2,7 @@ PODS:
   - CYLTabBarController (1.24.2):
     - CYLTabBarController/Core (= 1.24.2)
   - CYLTabBarController/Core (1.24.2)
+  - Differentiator (5.0.0)
   - Kingfisher (8.1.0)
   - LookinServer/Core (1.2.8)
   - LookinServer/Swift (1.2.8):
@@ -53,6 +54,10 @@ PODS:
   - RxCocoa (6.5.0):
     - RxRelay (= 6.5.0)
     - RxSwift (= 6.5.0)
+  - RxDataSources (5.0.0):
+    - Differentiator (~> 5.0)
+    - RxCocoa (~> 6.0)
+    - RxSwift (~> 6.0)
   - RxGesture (4.0.4):
     - RxCocoa (~> 6.0)
     - RxSwift (~> 6.0)
@@ -69,6 +74,7 @@ PODS:
     - Kingfisher
     - MTCategoryComponent
     - RxCocoa
+    - RxDataSources
     - RxGesture
     - RxRelay
     - RxSwift
@@ -91,6 +97,14 @@ PODS:
   - STImageCompressTool (0.0.1):
     - Kingfisher
     - YYKit
+  - STMessageModule (0.0.1):
+    - RxCocoa
+    - RxSwift
+    - SnapKit
+    - STAllBase
+    - STBaseModel
+    - STComponentTools/STRouter
+    - STModuleService.swift
   - STModuleService.swift (0.0.1):
     - STComponentTools/STModuleService
   - STPreivewModule (0.0.1):
@@ -110,6 +124,7 @@ DEPENDENCIES:
   - LookinServer/Swift
   - MTCategoryComponent (from `https://github.com/STTechnology5652/MTCategoryComponent.git`)
   - RxCocoa (~> 6.5.0)
+  - RxDataSources
   - RxGesture (~> 4.0.4)
   - RxRelay (~> 6.5.0)
   - RxSwift (~> 6.5.0)
@@ -120,6 +135,7 @@ DEPENDENCIES:
   - STBaseModel (from `../Components/STBaseModel`)
   - STComponentTools (from `https://github.com/STTechnology5652/STComponentTools.git`, tag `0.0.5`)
   - STImageCompressTool (from `../../STImageCompressTool`)
+  - STMessageModule (from `../Components/STMessageModule`)
   - STModuleService.swift (from `https://github.com/STTechnology5652/STModuleService.swift.git`)
   - STPreivewModule (from `../Components/STPreivewModule`)
   - STRoutServiceDefine (from `../Components/STRoutServiceDefine`)
@@ -128,11 +144,13 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - CYLTabBarController
+    - Differentiator
     - Kingfisher
     - LookinServer
     - Masonry
     - MBProgressHUD
     - RxCocoa
+    - RxDataSources
     - RxGesture
     - RxRelay
     - RxSwift
@@ -156,6 +174,8 @@ EXTERNAL SOURCES:
     :tag: 0.0.5
   STImageCompressTool:
     :path: "../../STImageCompressTool"
+  STMessageModule:
+    :path: "../Components/STMessageModule"
   STModuleService.swift:
     :git: https://github.com/STTechnology5652/STModuleService.swift.git
   STPreivewModule:
@@ -185,22 +205,25 @@ CHECKOUT OPTIONS:
 
 SPEC CHECKSUMS:
   CYLTabBarController: e7440ad0992edfb8ac14a6c793f43aa636c5cba5
+  Differentiator: e8497ceab83c1b10ca233716d547b9af21b9344d
   Kingfisher: dfbf20b6249ed4ef6f18d6a96c847bce860bdb95
   LookinServer: 1b2b61c6402ae29fa22182d48f5cd067b4e99e80
   Masonry: 678fab65091a9290e40e2832a55e7ab731aad201
   MBProgressHUD: 3ee5efcc380f6a79a7cc9b363dd669c5e1ae7406
   MTCategoryComponent: 4a4a34e58b9504703a321b92c6f20e77b3922b98
   RxCocoa: 94f817b71c07517321eb4f9ad299112ca8af743b
+  RxDataSources: aa47cc1ed6c500fa0dfecac5c979b723542d79cf
   RxGesture: f3efb47ed2d26a8082f7b660d4a59970e275a7f8
   RxRelay: 1de1523e604c72b6c68feadedd1af3b1b4d0ecbd
   RxSwift: 5710a9e6b17f3c3d6e40d6e559b9fa1e813b2ef8
   SnapKit: fe8a619752f3f27075cc9a90244d75c6c3f27e2a
-  STAlbumModule: 0d8bec74c8f39f65e74075bda1feb60189da118c
-  STAllBase: bc2096b25f47abd5d5115b296556fbbb4e7bc553
+  STAlbumModule: c2002c91d7b8d892828c1edcacc8701fd5c17c84
+  STAllBase: 29b6da9a3f30904760a329c68858abfdd605b0c3
   STAnnotation: 6a643e7da657f4e9176f2cce2df4d1d1f7697a91
   STBaseModel: 70f3237a0556a05f1e5bd5e8fe471af583f0090f
   STComponentTools: ca1aa401d7b8a47a99cd0ce8c85ad81499fa1409
   STImageCompressTool: c23a1737b76bd08154edadff932eee395dfd1582
+  STMessageModule: c1126d2d198994420eca84f36f534399dfb2fa81
   STModuleService.swift: 2d12d375ea036657258959ee90db9789555dcd40
   STPreivewModule: 0a439f38c7f8c2b1977d930029ab01c7d2f335a2
   STRoutServiceDefine: efab74c12edb3c7b196d9273091507629b47bfce
@@ -208,6 +231,6 @@ SPEC CHECKSUMS:
   Toast: 1f5ea13423a1e6674c4abdac5be53587ae481c4e
   YYKit: 7cda43304a8dc3696c449041e2cb3107b4e236e7
 
-PODFILE CHECKSUM: d8e49f8221ba6118fc89f007704006dc942e3555
+PODFILE CHECKSUM: cab37c4c728d38ddfe29350fba235c6fa7fe7c0a
 
 COCOAPODS: 1.14.3

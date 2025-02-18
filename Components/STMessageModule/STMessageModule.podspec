@@ -1,36 +1,36 @@
 Pod::Spec.new do |spec|
 
-  spec.name         = "STAllBase"
+  spec.name         = "STMessageModule"
   spec.version      = "0.0.1"
-  spec.summary      = "STAllBase 说明."
+  spec.summary      = "STMessageModule 说明."
   spec.description      = <<-DESC
-  STAllBase long description of the pod here.
+  STMessageModule long description of the pod here.
   DESC
 
-  spec.homepage         = 'http://github.com/stephenchen/STAllBase'
+  spec.homepage         = 'http://github.com/StephenChen/STMessageModule'
   spec.license      = { :type => "MIT", :file => "LICENSE" }
-  spec.author             = { "stephenchen" => "stephen.chen@hellotalk.cn" }
+  spec.author             = { "StephenChen" => "stephen.chen@hellotalk.cn" }
   spec.ios.deployment_target = '13.0'
 
-  spec.source       = { :git => "http://github/stephenchen/STAllBase.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "http://github/StephenChen/STMessageModule.git", :tag => "#{spec.version}" }
 
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  spec.source_files = 'STAllBase/{Public,Private}/**/*.{h,m,mm,c,cpp,swift}'
-  # spec.exclude_files = "STAllBase/Exclude" #排除文件
+  spec.source_files = 'STMessageModule/{Public,Private}/**/*.{h,m,mm,c,cpp,swift}'
+  # spec.exclude_files = "STMessageModule/Exclude" #排除文件
 
-  spec.project_header_files = 'STAllBase/Private/**/*.{h}'
-  spec.public_header_files = 'STAllBase/Public/**/*.h' #此处放置组件的对外暴漏的头文件
+  spec.project_header_files = 'STMessageModule/Private/**/*.{h}'
+  spec.public_header_files = 'STMessageModule/Public/**/*.h' #此处放置组件的对外暴漏的头文件
 
   # ――― binary framework/lib ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  #spec.vendored_frameworks = 'STAllBase/Private/**/*.framework'
-  #spec.vendored_libraries = 'STAllBase/Private/**/*.a'
+  #spec.vendored_frameworks = 'STMessageModule/Private/**/*.framework'
+  #spec.vendored_libraries = 'STMessageModule/Private/**/*.a'
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   # 放置 json,font,jpg,png等资源
-  #  spec.resources = ["STAllBase/{Public,Private}/**/*.{xib}"]
+  #  spec.resources = ["STMessageModule/{Public,Private}/**/*.{xib}"]
   #  spec.resource_bundles = {
-  #    'STAllBase' => ['STAllBase/Assets/*.xcassets', "STAllBase/{Public,Private}/**/*.{png,jpg,font,json}"]
+  #    'STMessageModule' => ['STMessageModule/Assets/*.xcassets', "STMessageModule/{Public,Private}/**/*.{png,jpg,font,json}"]
   #  }
 
 
@@ -48,26 +48,6 @@ Pod::Spec.new do |spec|
 
   # 其他依赖pod
   # spec.dependency "XXXXXXXX"
-  
-  spec.dependency 'RxSwift'
-  spec.dependency 'RxCocoa'
-  spec.dependency 'RxRelay'
-  spec.dependency 'RxGesture'
-  spec.dependency 'RxDataSources'
-
-  spec.dependency 'Kingfisher'
-  spec.dependency 'MTCategoryComponent'
-  
-  spec.dependency 'STAnnotation'
-  spec.dependency 'STComponentTools'
-  spec.dependency 'STModuleService.swift'
-  spec.dependency "STRoutServiceDefine"
-
-  # UI
-  spec.dependency 'SnapKit'
-  spec.dependency 'CYLTabBarController'
-  spec.dependency 'STImageCompressTool'
-  spec.dependency 'STRxInOutPutProtocol'
 
 #   spec.subspec 'WithLoad' do |ss|
 #       ss.source_files = 'YKHawkeye/Src/MethodUseTime/**/*{.h,.m}'
@@ -78,4 +58,11 @@ Pod::Spec.new do |spec|
 #       ss.vendored_frameworks = 'YKHawkeye/Framework/*.framework'
 #     end
 
+spec.dependency "STComponentTools/STRouter"
+spec.dependency "STModuleService.swift"  #swift 服务中间件
+spec.dependency "STAllBase"
+spec.dependency "STBaseModel"
+spec.dependency "RxSwift"
+spec.dependency "RxCocoa"
+spec.dependency "SnapKit"
 end
